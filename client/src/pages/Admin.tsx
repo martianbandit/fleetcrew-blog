@@ -23,7 +23,9 @@ import {
   Save,
   X,
   Star,
-  StarOff
+  StarOff,
+  Sparkles,
+  ImageIcon
 } from "lucide-react";
 import {
   Dialog,
@@ -96,6 +98,34 @@ function ArticleForm({
       toast.error("Erreur lors de la création", { description: error.message });
     },
   });
+
+  const generateImageMutation = trpc.imageGeneration.generateCoverImage.useMutation({
+    onSuccess: (data) => {
+      if (data.imageUrl) {
+        setFormData(prev => ({ ...prev, coverImage: data.imageUrl }));
+        toast.success("Image générée avec succès!", {
+          description: "L'image de couverture a été ajoutée à l'article.",
+        });
+      }
+    },
+    onError: (error) => {
+      toast.error("Erreur lors de la génération", { description: error.message });
+    },
+  });
+
+  const handleGenerateImage = () => {
+    if (!formData.title) {
+      toast.error("Veuillez d'abord saisir un titre pour l'article");
+      return;
+    }
+    const categoryName = categories?.find(c => c.id.toString() === formData.categoryId)?.name;
+    generateImageMutation.mutate({
+      title: formData.title,
+      excerpt: formData.excerpt || undefined,
+      content: formData.content || undefined,
+      category: categoryName || undefined,
+    });
+  };
 
   const updateMutation = trpc.articles.update.useMutation({
     onSuccess: () => {
@@ -201,13 +231,44 @@ function ArticleForm({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="coverImage">Image de couverture (URL)</Label>
-          <Input
-            id="coverImage"
-            value={formData.coverImage}
-            onChange={(e) => setFormData(prev => ({ ...prev, coverImage: e.target.value }))}
-            placeholder="https://..."
-          />
+          <Label htmlFor="coverImage">Image de couverture</Label>
+          <div className="flex gap-2">
+            <Input
+              id="coverImage"
+              value={formData.coverImage}
+              onChange={(e) => setFormData(prev => ({ ...prev, coverImage: e.target.value }))}
+              placeholder="https://... ou générer avec l'IA"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleGenerateImage}
+              disabled={generateImageMutation.isPending || !formData.title}
+              className="shrink-0"
+            >
+              {generateImageMutation.isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4 mr-1" />
+                  Générer
+                </>
+              )}
+            </Button>
+          </div>
+          {formData.coverImage && (
+            <div className="mt-2 relative rounded-lg overflow-hidden border border-border">
+              <img 
+                src={formData.coverImage} 
+                alt="Aperçu" 
+                className="w-full h-32 object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = 'none';
+                }}
+              />
+            </div>
+          )}
         </div>
         <div className="space-y-2">
           <Label htmlFor="category">Catégorie *</Label>

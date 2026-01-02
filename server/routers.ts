@@ -5,6 +5,8 @@ import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import * as db from "./db";
+import { generateImage } from "./_core/imageGeneration";
+import { invokeLLM } from "./_core/llm";
 
 // Admin procedure - only allows admin users
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
@@ -307,6 +309,62 @@ export const appRouter = router({
     feed: publicProcedure.query(async () => {
       return db.getArticlesForRSS(20);
     }),
+  }),
+
+  // Image Generation for articles
+  imageGeneration: router({
+    generateCoverImage: adminProcedure
+      .input(z.object({
+        title: z.string().min(1),
+        excerpt: z.string().optional(),
+        content: z.string().optional(),
+        category: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        // Use LLM to create an optimized prompt for image generation
+        const promptResponse = await invokeLLM({
+          messages: [
+            {
+              role: "system",
+              content: `Tu es un expert en création de prompts pour la génération d'images. 
+Ton rôle est de créer des prompts en anglais pour générer des images de couverture professionnelles pour des articles de blog sur la gestion de flottes de véhicules, la mécanique, les technologies et l'IA.
+
+Règles:
+- Le prompt doit être en anglais
+- Style: professionnel, moderne, technologique
+- Couleurs: privilégier les tons bleu cyan, turquoise et sombres
+- Thème: transport, camions, flottes, technologie, maintenance
+- Format: image de couverture de blog, 16:9
+- Pas de texte dans l'image
+- Réponds UNIQUEMENT avec le prompt, sans explication`
+            },
+            {
+              role: "user",
+              content: `Crée un prompt pour une image de couverture pour cet article:
+
+Titre: ${input.title}
+${input.excerpt ? `Résumé: ${input.excerpt}` : ''}
+${input.category ? `Catégorie: ${input.category}` : ''}
+${input.content ? `Début du contenu: ${input.content.substring(0, 500)}...` : ''}`
+            }
+          ],
+        });
+
+        const messageContent = promptResponse.choices[0]?.message?.content;
+        const imagePrompt = (typeof messageContent === 'string' ? messageContent : null) || 
+          `Professional fleet management technology, modern trucks with digital overlay, cyan and dark blue tones, futuristic transportation, 16:9 blog cover image`;
+
+        // Generate the image
+        const result = await generateImage({
+          prompt: imagePrompt,
+        });
+
+        return {
+          success: true,
+          imageUrl: result.url,
+          prompt: imagePrompt,
+        };
+      }),
   }),
 });
 

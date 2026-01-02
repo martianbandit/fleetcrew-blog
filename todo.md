@@ -74,3 +74,11 @@
 - [x] Ajouter table contactMessages dans la base de données
 - [x] Ajouter liens vers services FleetCrew dans le footer
 - [x] Améliorer système de newsletter avec workflow (variant full avec avantages)
+
+## Génération d'images automatique
+- [x] Créer route API pour générer des images à partir du contenu d'article
+- [x] Intégrer bouton de génération dans l'interface d'administration
+- [x] Sauvegarder les images générées dans S3
+- [x] Afficher l'image générée comme couverture de l'article
+- [x] Utiliser LLM pour créer des prompts optimisés
+- [x] Aperçu de l'image dans le formulaire
