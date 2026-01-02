@@ -10,6 +10,7 @@ import ArticleDetail from "./pages/ArticleDetail";
 import Innovations from "./pages/Innovations";
 import Admin from "./pages/Admin";
 import Contact from "./pages/Contact";
+import SkipToContent from "./components/SkipToContent";
 
 function Router() {
   return (
@@ -31,6 +32,7 @@ function App() {
     <ErrorBoundary>
       <ThemeProvider defaultTheme="dark">
         <TooltipProvider>
+          <SkipToContent />
           <Toaster />
           <Router />
         </TooltipProvider>

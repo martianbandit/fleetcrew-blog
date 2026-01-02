@@ -7,7 +7,9 @@ import {
   articles, InsertArticle, Article,
   articleTags, InsertArticleTag,
   newsletterSubscribers, InsertNewsletterSubscriber,
-  contactMessages, InsertContactMessage, ContactMessage
+  contactMessages, InsertContactMessage, ContactMessage,
+  articleViews, InsertArticleView, ArticleView,
+  articleLikes, InsertArticleLike, ArticleLike
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -416,6 +418,144 @@ export async function getNewContactMessagesCount() {
     .where(eq(contactMessages.status, 'nouveau'));
   
   return result[0]?.count ?? 0;
+}
+
+// ==================== ARTICLE ANALYTICS QUERIES ====================
+
+export async function recordArticleView(data: InsertArticleView) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  // Insert view record
+  await db.insert(articleViews).values(data);
+  
+  // Increment view count on article
+  await db.update(articles)
+    .set({ viewCount: sql`${articles.viewCount} + 1` })
+    .where(eq(articles.id, data.articleId));
+}
+
+export async function getArticleViewCount(articleId: number) {
+  const db = await getDb();
+  if (!db) return 0;
+  
+  const result = await db.select({ count: sql<number>`count(*)` })
+    .from(articleViews)
+    .where(eq(articleViews.articleId, articleId));
+  
+  return result[0]?.count ?? 0;
+}
+
+export async function getArticleStats(articleId: number) {
+  const db = await getDb();
+  if (!db) return { views: 0, avgReadTime: 0, avgScrollDepth: 0 };
+  
+  const result = await db.select({
+    views: sql<number>`count(*)`,
+    avgReadTime: sql<number>`COALESCE(AVG(${articleViews.readTime}), 0)`,
+    avgScrollDepth: sql<number>`COALESCE(AVG(${articleViews.scrollDepth}), 0)`,
+  }).from(articleViews)
+    .where(eq(articleViews.articleId, articleId));
+  
+  return {
+    views: result[0]?.views ?? 0,
+    avgReadTime: Math.round(result[0]?.avgReadTime ?? 0),
+    avgScrollDepth: Math.round(result[0]?.avgScrollDepth ?? 0),
+  };
+}
+
+export async function updateArticleReadProgress(viewId: number, readTime: number, scrollDepth: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(articleViews)
+    .set({ readTime, scrollDepth })
+    .where(eq(articleViews.id, viewId));
+}
+
+export async function toggleArticleLike(articleId: number, visitorId: string, userId?: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  // Check if already liked
+  const existing = await db.select().from(articleLikes)
+    .where(and(
+      eq(articleLikes.articleId, articleId),
+      eq(articleLikes.visitorId, visitorId)
+    )).limit(1);
+  
+  if (existing.length > 0) {
+    // Unlike
+    await db.delete(articleLikes).where(eq(articleLikes.id, existing[0].id));
+    await db.update(articles)
+      .set({ likeCount: sql`GREATEST(${articles.likeCount} - 1, 0)` })
+      .where(eq(articles.id, articleId));
+    return { liked: false };
+  } else {
+    // Like
+    await db.insert(articleLikes).values({ articleId, visitorId, userId });
+    await db.update(articles)
+      .set({ likeCount: sql`${articles.likeCount} + 1` })
+      .where(eq(articles.id, articleId));
+    return { liked: true };
+  }
+}
+
+export async function hasUserLikedArticle(articleId: number, visitorId: string) {
+  const db = await getDb();
+  if (!db) return false;
+  
+  const result = await db.select().from(articleLikes)
+    .where(and(
+      eq(articleLikes.articleId, articleId),
+      eq(articleLikes.visitorId, visitorId)
+    )).limit(1);
+  
+  return result.length > 0;
+}
+
+export async function getPopularArticles(limit = 5) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select().from(articles)
+    .where(eq(articles.status, 'published'))
+    .orderBy(desc(articles.viewCount))
+    .limit(limit);
+}
+
+export async function getGlobalStats() {
+  const db = await getDb();
+  if (!db) return { totalViews: 0, totalLikes: 0, totalArticles: 0, totalSubscribers: 0 };
+  
+  const [viewsResult, likesResult, articlesResult, subscribersResult] = await Promise.all([
+    db.select({ total: sql<number>`COALESCE(SUM(${articles.viewCount}), 0)` }).from(articles),
+    db.select({ total: sql<number>`COALESCE(SUM(${articles.likeCount}), 0)` }).from(articles),
+    db.select({ total: sql<number>`count(*)` }).from(articles).where(eq(articles.status, 'published')),
+    db.select({ total: sql<number>`count(*)` }).from(newsletterSubscribers).where(eq(newsletterSubscribers.isActive, true)),
+  ]);
+  
+  return {
+    totalViews: viewsResult[0]?.total ?? 0,
+    totalLikes: likesResult[0]?.total ?? 0,
+    totalArticles: articlesResult[0]?.total ?? 0,
+    totalSubscribers: subscribersResult[0]?.total ?? 0,
+  };
+}
+
+export async function getViewsOverTime(days = 30) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  const result = await db.select({
+    date: sql<string>`DATE(${articleViews.viewedAt})`,
+    views: sql<number>`count(*)`,
+  }).from(articleViews)
+    .where(sql`${articleViews.viewedAt} >= DATE_SUB(NOW(), INTERVAL ${days} DAY)`)
+    .groupBy(sql`DATE(${articleViews.viewedAt})`)
+    .orderBy(sql`DATE(${articleViews.viewedAt})`);
+  
+  return result;
 }
 
 // ==================== RSS FEED QUERIES ====================

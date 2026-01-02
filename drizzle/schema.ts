@@ -62,7 +62,10 @@ export const articles = mysqlTable("articles", {
   status: mysqlEnum("status", ["draft", "published", "archived"]).default("draft").notNull(),
   featured: boolean("featured").default(false).notNull(),
   readTime: int("readTime").default(5),
+  viewCount: int("viewCount").default(0).notNull(),
+  likeCount: int("likeCount").default(0).notNull(),
   publishedAt: timestamp("publishedAt"),
+  scheduledAt: timestamp("scheduledAt"), // For scheduled publishing
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -113,3 +116,36 @@ export const contactMessages = mysqlTable("contactMessages", {
 
 export type ContactMessage = typeof contactMessages.$inferSelect;
 export type InsertContactMessage = typeof contactMessages.$inferInsert;
+
+/**
+ * Article views tracking for analytics
+ */
+export const articleViews = mysqlTable("articleViews", {
+  id: int("id").autoincrement().primaryKey(),
+  articleId: int("articleId").notNull(),
+  visitorId: varchar("visitorId", { length: 64 }), // Anonymous visitor ID
+  userId: int("userId"), // Logged in user (optional)
+  ipHash: varchar("ipHash", { length: 64 }), // Hashed IP for uniqueness
+  userAgent: varchar("userAgent", { length: 500 }),
+  referrer: varchar("referrer", { length: 500 }),
+  readTime: int("readTime").default(0), // Time spent reading in seconds
+  scrollDepth: int("scrollDepth").default(0), // Percentage scrolled (0-100)
+  viewedAt: timestamp("viewedAt").defaultNow().notNull(),
+});
+
+export type ArticleView = typeof articleViews.$inferSelect;
+export type InsertArticleView = typeof articleViews.$inferInsert;
+
+/**
+ * Article likes
+ */
+export const articleLikes = mysqlTable("articleLikes", {
+  id: int("id").autoincrement().primaryKey(),
+  articleId: int("articleId").notNull(),
+  visitorId: varchar("visitorId", { length: 64 }),
+  userId: int("userId"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type ArticleLike = typeof articleLikes.$inferSelect;
+export type InsertArticleLike = typeof articleLikes.$inferInsert;

@@ -25,7 +25,9 @@ import {
   Star,
   StarOff,
   Sparkles,
-  ImageIcon
+  ImageIcon,
+  Calendar,
+  Clock
 } from "lucide-react";
 import {
   Dialog,
@@ -86,6 +88,7 @@ function ArticleForm({
     featured: article?.featured || false,
     readTime: article?.readTime?.toString() || "5",
     tagIds: article?.tags?.map((t: any) => t.id) || [],
+    scheduledAt: article?.scheduledAt ? new Date(article.scheduledAt).toISOString().slice(0, 16) : "",
   });
 
   const createMutation = trpc.articles.create.useMutation({
@@ -169,6 +172,7 @@ function ArticleForm({
       featured: formData.featured,
       readTime: parseInt(formData.readTime) || 5,
       tagIds: formData.tagIds,
+      scheduledAt: formData.scheduledAt ? new Date(formData.scheduledAt) : undefined,
     };
 
     if (article) {
@@ -325,6 +329,27 @@ function ArticleForm({
           />
           <Label htmlFor="featured">Article à la une</Label>
         </div>
+      </div>
+
+      {/* Planification */}
+      <div className="space-y-2 p-4 rounded-lg border border-border/40 bg-card/30">
+        <Label htmlFor="scheduledAt" className="flex items-center gap-2">
+          <Calendar className="w-4 h-4" />
+          Planifier la publication
+        </Label>
+        <Input
+          id="scheduledAt"
+          type="datetime-local"
+          value={formData.scheduledAt}
+          onChange={(e) => setFormData(prev => ({ ...prev, scheduledAt: e.target.value }))}
+          className="max-w-xs"
+        />
+        {formData.scheduledAt && (
+          <p className="text-sm text-muted-foreground flex items-center gap-1">
+            <Clock className="w-3 h-3" />
+            Sera publié le {format(new Date(formData.scheduledAt), "d MMMM yyyy 'à' HH:mm", { locale: fr })}
+          </p>
+        )}
       </div>
 
       <div className="flex justify-end gap-3 pt-4 border-t">

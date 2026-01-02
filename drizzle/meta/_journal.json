@@ -22,6 +22,20 @@
       "when": 1767383281001,
       "tag": "0002_mean_arachne",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1767386791027,
+      "tag": "0003_wealthy_black_cat",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1767387148196,
+      "tag": "0004_wealthy_the_stranger",
+      "breakpoints": true
     }
   ]
 }

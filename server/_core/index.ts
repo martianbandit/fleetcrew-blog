@@ -7,7 +7,7 @@ import { registerOAuthRoutes } from "./oauth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
-import { getArticlesForRSS } from "../db";
+import { getArticlesForRSS, getAllCategories } from "../db";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -37,6 +37,82 @@ async function startServer() {
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
   
+  // robots.txt endpoint
+  app.get("/robots.txt", (req, res) => {
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    const robotsTxt = `User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: ${baseUrl}/sitemap.xml
+
+# Disallow admin pages
+Disallow: /admin
+
+# Allow all crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+`;
+    res.set('Content-Type', 'text/plain');
+    res.send(robotsTxt);
+  });
+
+  // Sitemap XML endpoint
+  app.get("/sitemap.xml", async (req, res) => {
+    try {
+      const articles = await getArticlesForRSS(1000);
+      const categories = await getAllCategories();
+      const baseUrl = `${req.protocol}://${req.get('host')}`;
+      const now = new Date().toISOString();
+
+      // Static pages
+      const staticPages = [
+        { loc: baseUrl, priority: '1.0', changefreq: 'daily' },
+        { loc: `${baseUrl}/articles`, priority: '0.9', changefreq: 'daily' },
+        { loc: `${baseUrl}/innovations`, priority: '0.8', changefreq: 'weekly' },
+        { loc: `${baseUrl}/contact`, priority: '0.6', changefreq: 'monthly' },
+      ];
+
+      // Category pages
+      const categoryPages = categories.map(cat => ({
+        loc: `${baseUrl}/articles?category=${cat.id}`,
+        priority: '0.7',
+        changefreq: 'weekly'
+      }));
+
+      // Article pages
+      const articlePages = articles.map(article => ({
+        loc: `${baseUrl}/articles/${article.slug}`,
+        priority: '0.8',
+        changefreq: 'weekly',
+        lastmod: article.publishedAt ? new Date(article.publishedAt).toISOString() : now
+      }));
+
+      const allPages = [...staticPages, ...categoryPages, ...articlePages];
+
+      const urlEntries = allPages.map(page => `
+  <url>
+    <loc>${page.loc}</loc>
+    <lastmod>${'lastmod' in page ? page.lastmod : now}</lastmod>
+    <changefreq>${page.changefreq}</changefreq>
+    <priority>${page.priority}</priority>
+  </url>`).join('');
+
+      const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urlEntries}
+</urlset>`;
+
+      res.set('Content-Type', 'application/xml; charset=utf-8');
+      res.send(sitemapXml);
+    } catch (error) {
+      console.error('Sitemap error:', error);
+      res.status(500).send('Error generating sitemap');
+    }
+  });
+
   // RSS Feed endpoint
   app.get("/rss.xml", async (req, res) => {
     try {

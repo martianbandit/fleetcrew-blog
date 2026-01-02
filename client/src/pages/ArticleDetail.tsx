@@ -3,6 +3,13 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import NewsletterForm from "@/components/NewsletterForm";
 import { SocialShareInline } from "@/components/SocialShare";
+import SEOHead from "@/components/SEOHead";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import LikeButton from "@/components/LikeButton";
+import { ArticleStats } from "@/components/ArticleStats";
+import { useArticleAnalytics } from "@/hooks/useArticleAnalytics";
+import ReadingProgressBar from "@/components/ReadingProgressBar";
+import RelatedArticles from "@/components/RelatedArticles";
 import { trpc } from "@/lib/trpc";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -10,7 +17,6 @@ import {
   Calendar, 
   Clock, 
   User, 
-  ArrowLeft, 
   Tag,
   Loader2
 } from "lucide-react";
@@ -26,6 +32,12 @@ export default function ArticleDetail() {
 
   // URL actuelle pour le partage
   const currentUrl = typeof window !== "undefined" ? window.location.href : "";
+
+  // Analytics tracking
+  useArticleAnalytics({
+    articleId: article?.id ?? 0,
+    enabled: !!article?.id,
+  });
 
   if (isLoading) {
     return (
@@ -63,8 +75,23 @@ export default function ArticleDetail() {
     ? format(new Date(article.publishedAt), "d MMMM yyyy", { locale: fr })
     : null;
 
+  // Tags pour SEO
+  const articleTags = article.tags?.map(t => t.name) || [];
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <ReadingProgressBar />
+      <SEOHead
+        title={article.title}
+        description={article.excerpt || undefined}
+        image={article.coverImage || undefined}
+        url={currentUrl}
+        type="article"
+        publishedTime={article.publishedAt ? new Date(article.publishedAt).toISOString() : undefined}
+        author={article.author?.name || undefined}
+        section={article.category?.name || undefined}
+        tags={articleTags}
+      />
       <Header />
       
       <main className="flex-1">
@@ -72,14 +99,16 @@ export default function ArticleDetail() {
         <section className="relative py-12 md:py-20 hero-gradient">
           <div className="container">
             <div className="max-w-4xl mx-auto">
-              {/* Back button */}
-              <Link 
-                href="/articles" 
-                className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Retour aux articles
-              </Link>
+              {/* Breadcrumbs */}
+              <div className="mb-6">
+                <Breadcrumbs
+                  items={[
+                    { label: "Articles", href: "/articles" },
+                    ...(article.category ? [{ label: article.category.name, href: `/articles?category=${article.category.id}` }] : []),
+                    { label: article.title }
+                  ]}
+                />
+              </div>
 
               {/* Category */}
               {article.category && (
@@ -123,7 +152,9 @@ export default function ArticleDetail() {
                     {article.readTime} min de lecture
                   </span>
                 )}
-                <div className="ml-auto">
+                <ArticleStats articleId={article.id} viewCount={article.viewCount} className="hidden sm:flex" />
+                <div className="ml-auto flex items-center gap-2">
+                  <LikeButton articleId={article.id} initialLikeCount={article.likeCount} />
                   <SocialShareInline 
                     url={currentUrl}
                     title={article.title}
@@ -186,6 +217,19 @@ export default function ArticleDetail() {
                   />
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Articles similaires */}
+        <section className="py-8">
+          <div className="container">
+            <div className="max-w-4xl mx-auto">
+              <RelatedArticles
+                currentArticleId={article.id}
+                categoryId={article.category?.id}
+                limit={3}
+              />
             </div>
           </div>
         </section>

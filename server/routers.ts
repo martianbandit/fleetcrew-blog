@@ -177,14 +177,16 @@ export const appRouter = router({
         featured: z.boolean().default(false),
         readTime: z.number().optional(),
         tagIds: z.array(z.number()).optional(),
+        scheduledAt: z.date().optional(),
       }))
       .mutation(async ({ input, ctx }) => {
-        const { tagIds, ...articleData } = input;
+        const { tagIds, scheduledAt, ...articleData } = input;
         
         const article = await db.createArticle({
           ...articleData,
           authorId: ctx.user.id,
           publishedAt: input.status === 'published' ? new Date() : null,
+          scheduledAt: scheduledAt || null,
         });
         
         if (article && tagIds && tagIds.length > 0) {
@@ -207,9 +209,15 @@ export const appRouter = router({
         featured: z.boolean().optional(),
         readTime: z.number().optional(),
         tagIds: z.array(z.number()).optional(),
+        scheduledAt: z.date().optional(),
       }))
       .mutation(async ({ input }) => {
-        const { id, tagIds, ...data } = input;
+        const { id, tagIds, scheduledAt, ...data } = input;
+        
+        // Add scheduledAt to data if provided
+        if (scheduledAt !== undefined) {
+          (data as any).scheduledAt = scheduledAt;
+        }
         
         // If publishing for the first time, set publishedAt
         if (data.status === 'published') {
@@ -309,6 +317,86 @@ export const appRouter = router({
     feed: publicProcedure.query(async () => {
       return db.getArticlesForRSS(20);
     }),
+  }),
+
+  // Analytics router
+  analytics: router({
+    // Record a view (public - called when user visits an article)
+    recordView: publicProcedure
+      .input(z.object({
+        articleId: z.number(),
+        visitorId: z.string(),
+        userAgent: z.string().optional(),
+        referrer: z.string().optional(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        await db.recordArticleView({
+          articleId: input.articleId,
+          visitorId: input.visitorId,
+          userId: ctx.user?.id,
+          userAgent: input.userAgent,
+          referrer: input.referrer,
+        });
+        return { success: true };
+      }),
+
+    // Update read progress (public - called periodically while reading)
+    updateProgress: publicProcedure
+      .input(z.object({
+        viewId: z.number(),
+        readTime: z.number(),
+        scrollDepth: z.number().min(0).max(100),
+      }))
+      .mutation(async ({ input }) => {
+        await db.updateArticleReadProgress(input.viewId, input.readTime, input.scrollDepth);
+        return { success: true };
+      }),
+
+    // Toggle like (public)
+    toggleLike: publicProcedure
+      .input(z.object({
+        articleId: z.number(),
+        visitorId: z.string(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        return db.toggleArticleLike(input.articleId, input.visitorId, ctx.user?.id);
+      }),
+
+    // Check if user liked an article (public)
+    hasLiked: publicProcedure
+      .input(z.object({
+        articleId: z.number(),
+        visitorId: z.string(),
+      }))
+      .query(async ({ input }) => {
+        return db.hasUserLikedArticle(input.articleId, input.visitorId);
+      }),
+
+    // Get article stats (public)
+    articleStats: publicProcedure
+      .input(z.object({ articleId: z.number() }))
+      .query(async ({ input }) => {
+        return db.getArticleStats(input.articleId);
+      }),
+
+    // Get popular articles (public)
+    popular: publicProcedure
+      .input(z.object({ limit: z.number().default(5) }).optional())
+      .query(async ({ input }) => {
+        return db.getPopularArticles(input?.limit ?? 5);
+      }),
+
+    // Admin: Get global stats
+    globalStats: adminProcedure.query(async () => {
+      return db.getGlobalStats();
+    }),
+
+    // Admin: Get views over time
+    viewsOverTime: adminProcedure
+      .input(z.object({ days: z.number().default(30) }).optional())
+      .query(async ({ input }) => {
+        return db.getViewsOverTime(input?.days ?? 30);
+      }),
   }),
 
   // Image Generation for articles

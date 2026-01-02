@@ -82,3 +82,63 @@
 - [x] Afficher l'image générée comme couverture de l'article
 - [x] Utiliser LLM pour créer des prompts optimisés
 - [x] Aperçu de l'image dans le formulaire
+
+## SEO Avancé
+- [x] Créer sitemap.xml dynamique
+- [x] Ajouter robots.txt
+- [x] Meta tags dynamiques par article (titre, description, image)
+- [x] Schema.org markup pour articles (Article, BlogPosting)
+- [x] Breadcrumbs structurés
+
+## Statistiques et Analytics
+- [x] Compteur de vues par article
+- [x] Temps de lecture moyen
+- [x] Articles les plus populaires
+- [x] Dashboard statistiques dans l'admin
+- [x] Graphiques de tendances
+- [x] Bouton J'aime avec compteur
+- [x] Tracking du scroll depth
+
+## Engagement utilisateur
+- [ ] Système de commentaires
+- [x] Bouton "J'aime" sur les articles
+- [x] Articles similaires/recommandés
+- [x] Temps de lecture estimé affiché
+- [x] Progression de lecture (barre de défilement)
+
+## Contenu enrichi
+- [x] Support des vidéos YouTube/Vimeo intégrées
+- [x] Galeries d'images dans les articles
+- [x] Table des matières automatique
+- [x] Blocs de code avec coloration syntaxique (via Streamdown)
+- [x] Citations et encadrés stylisés (via prose classes)
+
+## Performance et Accessibilité
+- [x] Lazy loading des images
+- [x] Optimisation des images (via S3 et lazy loading)
+- [ ] Mode hors ligne (PWA)
+- [x] Accessibilité WCAG 2.1 (skip to content, aria labels, focus visible)
+- [ ] Tests de performance Lighthouse
+
+## Fonctionnalités avancées
+- [ ] Mode multi-auteurs
+- [x] Planification de publication d'articles
+- [x] Versions brouillon avec prévisualisation
+- [ ] Import/Export d'articles (Markdown, JSON)
+- [x] Sauvegarde automatique des brouillons (via formulaire)
+
+## Intégrations externes
+- [ ] Google Analytics 4
+- [ ] Hotjar ou équivalent pour heatmaps
+- [ ] Mailchimp pour newsletter avancée
+- [ ] Algolia pour recherche avancée
+- [ ] Cloudflare pour CDN et sécurité
+
+## Monétisation (optionnel)
+- [ ] Espaces publicitaires
+- [ ] Articles sponsorisés
+- [ ] Abonnement premium
+- [ ] Contenu exclusif pour abonnés
+
+## Bugs à corriger
+- [x] Problème de connexion utilisateur (fonctionne - OAuth Manus opérationnel)
