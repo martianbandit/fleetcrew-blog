@@ -64,3 +64,13 @@
 - [x] Ajouter nouvelles catégories (Transport, Maintenance Prédictive, Logiciels, Diagnostic, Camions, Véhicules hors routes)
 - [x] Configurer tâche planifiée (lundi, mercredi, vendredi à 19h)
 - [x] Intégrer liens vers services FleetCrew dans les articles
+
+## Flux RSS et Contact
+- [x] Créer endpoint API pour flux RSS
+- [x] Ajouter icône FleetCrew dans le Header (visible sur chaque page)
+- [x] Créer page/formulaire de contact avec email fleetcrewteam@manus.bot
+- [x] Ajouter bouton RSS dans le footer
+- [x] Ajouter lien RSS dans le head HTML
+- [x] Ajouter table contactMessages dans la base de données
+- [x] Ajouter liens vers services FleetCrew dans le footer
+- [x] Améliorer système de newsletter avec workflow (variant full avec avantages)

@@ -9,6 +9,7 @@ import Articles from "./pages/Articles";
 import ArticleDetail from "./pages/ArticleDetail";
 import Innovations from "./pages/Innovations";
 import Admin from "./pages/Admin";
+import Contact from "./pages/Contact";
 
 function Router() {
   return (
@@ -18,6 +19,7 @@ function Router() {
       <Route path="/articles/:slug" component={ArticleDetail} />
       <Route path="/innovations" component={Innovations} />
       <Route path="/admin" component={Admin} />
+      <Route path="/contact" component={Contact} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>

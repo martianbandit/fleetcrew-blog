@@ -264,6 +264,50 @@ export const appRouter = router({
       return db.getSubscriberCount();
     }),
   }),
+
+  // Contact messages router
+  contact: router({
+    submit: publicProcedure
+      .input(z.object({
+        name: z.string().min(1).max(100),
+        email: z.string().email(),
+        subject: z.string().min(1).max(255),
+        message: z.string().min(10).max(5000),
+        type: z.enum(['avis', 'commentaire', 'demande', 'autre']).default('autre'),
+      }))
+      .mutation(async ({ input }) => {
+        await db.createContactMessage(input);
+        return { success: true, message: 'Message envoyé avec succès!' };
+      }),
+    
+    // Admin routes
+    list: adminProcedure
+      .input(z.object({ status: z.enum(['nouveau', 'lu', 'repondu', 'archive']).optional() }).optional())
+      .query(async ({ input }) => {
+        return db.getAllContactMessages(input);
+      }),
+    
+    updateStatus: adminProcedure
+      .input(z.object({
+        id: z.number(),
+        status: z.enum(['nouveau', 'lu', 'repondu', 'archive']),
+      }))
+      .mutation(async ({ input }) => {
+        await db.updateContactMessageStatus(input.id, input.status);
+        return { success: true };
+      }),
+    
+    newCount: adminProcedure.query(async () => {
+      return db.getNewContactMessagesCount();
+    }),
+  }),
+
+  // RSS Feed
+  rss: router({
+    feed: publicProcedure.query(async () => {
+      return db.getArticlesForRSS(20);
+    }),
+  }),
 });
 
 export type AppRouter = typeof appRouter;

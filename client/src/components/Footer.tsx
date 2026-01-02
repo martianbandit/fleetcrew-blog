@@ -1,5 +1,6 @@
 import { Link } from "wouter";
-import { Truck, Mail, ExternalLink } from "lucide-react";
+import { Mail, ExternalLink, Rss } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const externalResources = [
   { name: "SAAQ Québec", url: "https://saaq.gouv.qc.ca/" },
@@ -20,16 +21,26 @@ const categories = [
   { name: "Actualités", slug: "actualites" },
 ];
 
+const fleetcrewServices = [
+  { name: "FleetParts", url: "https://fleetparts.manus.space/", desc: "Comparateur de pièces" },
+  { name: "FleetCrew Intelligence", url: "https://fleetcrew-kb75upsk.manus.space", desc: "Intelligence opérationnelle" },
+  { name: "Gestion d'Inventaire", url: "https://8xhpiqcen0qp.manus.space", desc: "Gestion de pièces" },
+];
+
 export default function Footer() {
   return (
     <footer className="border-t border-border/40 bg-card/50">
       <div className="container py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
           {/* Brand */}
           <div className="lg:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10">
-                <Truck className="w-6 h-6 text-primary" />
+              <div className="flex items-center justify-center w-10 h-10 rounded-lg overflow-hidden">
+                <img 
+                  src="/fleetcrew-icon.png" 
+                  alt="FleetCrew" 
+                  className="w-10 h-10 object-contain"
+                />
               </div>
               <span className="font-bold text-xl tracking-tight">
                 Fleet<span className="text-primary">Crew</span>
@@ -39,10 +50,19 @@ export default function Footer() {
               Votre source d'information sur la gestion de flottes, la mécanique automobile, 
               les technologies et l'intelligence artificielle au Québec.
             </p>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
               <Mail className="w-4 h-4" />
-              <span>contact@fleetcrew.ca</span>
+              <a href="mailto:fleetcrewteam@manus.bot" className="hover:text-primary transition-colors">
+                fleetcrewteam@manus.bot
+              </a>
             </div>
+            {/* RSS Feed Button */}
+            <Button variant="outline" size="sm" asChild className="gap-2">
+              <a href="/rss.xml" target="_blank" rel="noopener noreferrer">
+                <Rss className="w-4 h-4 text-orange-500" />
+                Flux RSS
+              </a>
+            </Button>
           </div>
 
           {/* Categories */}
@@ -85,6 +105,36 @@ export default function Footer() {
                   Innovations
                 </Link>
               </li>
+              <li>
+                <Link href="/contact" className="text-sm text-foreground/80 hover:text-primary transition-colors">
+                  Contact
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* FleetCrew Services */}
+          <div>
+            <h3 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground mb-4">
+              Services FleetCrew
+            </h3>
+            <ul className="space-y-3">
+              {fleetcrewServices.map((service) => (
+                <li key={service.name}>
+                  <a
+                    href={service.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block group"
+                  >
+                    <span className="text-sm text-foreground/80 group-hover:text-primary transition-colors inline-flex items-center gap-1">
+                      {service.name}
+                      <ExternalLink className="w-3 h-3" />
+                    </span>
+                    <p className="text-xs text-muted-foreground">{service.desc}</p>
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -117,9 +167,20 @@ export default function Footer() {
             <p className="text-sm text-muted-foreground">
               © {new Date().getFullYear()} FleetCrew. Tous droits réservés.
             </p>
-            <p className="text-sm text-muted-foreground">
-              Fait avec passion au Québec 🍁
-            </p>
+            <div className="flex items-center gap-4">
+              <a 
+                href="/rss.xml" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
+              >
+                <Rss className="w-4 h-4" />
+                RSS
+              </a>
+              <p className="text-sm text-muted-foreground">
+                Fait avec passion au Québec 🍁
+              </p>
+            </div>
           </div>
         </div>
       </div>

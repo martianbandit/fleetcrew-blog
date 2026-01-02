@@ -238,8 +238,8 @@ export default function Home() {
         {/* Newsletter Section */}
         <section className="py-16 md:py-24 bg-card/30">
           <div className="container">
-            <div className="max-w-xl mx-auto">
-              <NewsletterForm />
+            <div className="max-w-4xl mx-auto">
+              <NewsletterForm variant="full" />
             </div>
           </div>
         </section>

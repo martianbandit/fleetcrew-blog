@@ -6,7 +6,8 @@ import {
   tags, InsertTag, Tag,
   articles, InsertArticle, Article,
   articleTags, InsertArticleTag,
-  newsletterSubscribers, InsertNewsletterSubscriber
+  newsletterSubscribers, InsertNewsletterSubscriber,
+  contactMessages, InsertContactMessage, ContactMessage
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -372,4 +373,67 @@ export async function getSubscriberCount() {
     .where(eq(newsletterSubscribers.isActive, true));
   
   return result[0]?.count ?? 0;
+}
+
+// ==================== CONTACT MESSAGE QUERIES ====================
+
+export async function createContactMessage(data: InsertContactMessage) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(contactMessages).values(data);
+  const insertId = result[0].insertId;
+  const message = await db.select().from(contactMessages).where(eq(contactMessages.id, insertId)).limit(1);
+  return message[0];
+}
+
+export async function getAllContactMessages(options?: { status?: 'nouveau' | 'lu' | 'repondu' | 'archive' }) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  if (options?.status) {
+    return db.select().from(contactMessages)
+      .where(eq(contactMessages.status, options.status))
+      .orderBy(desc(contactMessages.createdAt));
+  }
+  
+  return db.select().from(contactMessages).orderBy(desc(contactMessages.createdAt));
+}
+
+export async function updateContactMessageStatus(id: number, status: 'nouveau' | 'lu' | 'repondu' | 'archive') {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(contactMessages).set({ status }).where(eq(contactMessages.id, id));
+}
+
+export async function getNewContactMessagesCount() {
+  const db = await getDb();
+  if (!db) return 0;
+  
+  const result = await db.select({ count: sql<number>`count(*)` })
+    .from(contactMessages)
+    .where(eq(contactMessages.status, 'nouveau'));
+  
+  return result[0]?.count ?? 0;
+}
+
+// ==================== RSS FEED QUERIES ====================
+
+export async function getArticlesForRSS(limit = 20) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select({
+    id: articles.id,
+    title: articles.title,
+    slug: articles.slug,
+    excerpt: articles.excerpt,
+    content: articles.content,
+    publishedAt: articles.publishedAt,
+    authorId: articles.authorId,
+  }).from(articles)
+    .where(eq(articles.status, 'published'))
+    .orderBy(desc(articles.publishedAt))
+    .limit(limit);
 }

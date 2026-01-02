@@ -2,7 +2,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { getLoginUrl } from "@/const";
 import { Link, useLocation } from "wouter";
-import { Menu, X, Truck, User, LogOut, Settings } from "lucide-react";
+import { Menu, X, User, LogOut, Settings, Mail } from "lucide-react";
 import { useState } from "react";
 import {
   DropdownMenu,
@@ -16,6 +16,7 @@ const navLinks = [
   { href: "/", label: "Accueil" },
   { href: "/articles", label: "Articles" },
   { href: "/innovations", label: "Innovations" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export default function Header() {
@@ -31,10 +32,14 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-lg">
       <div className="container flex h-16 items-center justify-between">
-        {/* Logo */}
+        {/* Logo with FleetCrew Icon */}
         <Link href="/" className="flex items-center gap-2 group">
-          <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-            <Truck className="w-6 h-6 text-primary" />
+          <div className="flex items-center justify-center w-10 h-10 rounded-lg overflow-hidden group-hover:scale-105 transition-transform">
+            <img 
+              src="/fleetcrew-icon.png" 
+              alt="FleetCrew" 
+              className="w-10 h-10 object-contain"
+            />
           </div>
           <span className="font-bold text-xl tracking-tight">
             Fleet<span className="text-primary">Crew</span>
