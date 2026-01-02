@@ -50,3 +50,11 @@
 - [x] Composant de partage social (Facebook, Twitter/X, LinkedIn, Email)
 - [x] Intégration dans la page d'article
 - [x] Bouton de copie de lien
+
+## SEO
+- [x] Ajouter meta description à la page d'accueil
+- [x] Ajouter meta keywords à la page d'accueil
+- [x] Ajouter meta tags Open Graph (Facebook)
+- [x] Ajouter meta tags Twitter
+- [x] Ajouter URL canonique
+- [x] Changer la langue en français (fr)
