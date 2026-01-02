@@ -45,3 +45,8 @@
 ## Tests
 - [x] Tests unitaires pour les routes API (catégories, tags, articles, newsletter)
 - [x] Tests de contrôle d'accès admin
+
+## Partage réseaux sociaux
+- [x] Composant de partage social (Facebook, Twitter/X, LinkedIn, Email)
+- [x] Intégration dans la page d'article
+- [x] Bouton de copie de lien

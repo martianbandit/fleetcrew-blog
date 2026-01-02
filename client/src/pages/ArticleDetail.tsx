@@ -2,6 +2,7 @@ import { useParams, Link } from "wouter";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import NewsletterForm from "@/components/NewsletterForm";
+import { SocialShareInline } from "@/components/SocialShare";
 import { trpc } from "@/lib/trpc";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -11,12 +12,10 @@ import {
   User, 
   ArrowLeft, 
   Tag,
-  Share2,
   Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Streamdown } from "streamdown";
-import { toast } from "sonner";
 
 export default function ArticleDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -25,22 +24,8 @@ export default function ArticleDetail() {
     { enabled: !!slug }
   );
 
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: article?.title,
-          text: article?.excerpt || "",
-          url: window.location.href,
-        });
-      } catch (err) {
-        // User cancelled or error
-      }
-    } else {
-      await navigator.clipboard.writeText(window.location.href);
-      toast.success("Lien copié dans le presse-papier");
-    }
-  };
+  // URL actuelle pour le partage
+  const currentUrl = typeof window !== "undefined" ? window.location.href : "";
 
   if (isLoading) {
     return (
@@ -138,15 +123,13 @@ export default function ArticleDetail() {
                     {article.readTime} min de lecture
                   </span>
                 )}
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={handleShare}
-                  className="ml-auto"
-                >
-                  <Share2 className="w-4 h-4 mr-2" />
-                  Partager
-                </Button>
+                <div className="ml-auto">
+                  <SocialShareInline 
+                    url={currentUrl}
+                    title={article.title}
+                    description={article.excerpt || ""}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -188,6 +171,21 @@ export default function ArticleDetail() {
                   </div>
                 </div>
               )}
+
+              {/* Partage en fin d'article */}
+              <div className="mt-12 pt-8 border-t border-border/40">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 rounded-xl bg-card/50 border border-border/40">
+                  <div>
+                    <h3 className="font-semibold text-lg">Vous avez aimé cet article ?</h3>
+                    <p className="text-sm text-muted-foreground">Partagez-le avec votre réseau professionnel</p>
+                  </div>
+                  <SocialShareInline 
+                    url={currentUrl}
+                    title={article.title}
+                    description={article.excerpt || ""}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </section>
