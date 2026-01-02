@@ -142,3 +142,10 @@
 
 ## Bugs à corriger
 - [x] Problème de connexion utilisateur (fonctionne - OAuth Manus opérationnel)
+
+## Authentification API pour tâches planifiées
+- [x] Créer système d'authentification par clé API
+- [x] Créer endpoint API REST pour publication d'articles (sans OAuth)
+- [x] Générer clé API sécurisée pour les tâches planifiées (utilise JWT_SECRET)
+- [x] Mettre à jour les instructions des tâches planifiées
+- [x] Documenter l'utilisation de l'API (API_DOCUMENTATION.md)

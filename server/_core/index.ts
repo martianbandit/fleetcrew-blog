@@ -7,7 +7,10 @@ import { registerOAuthRoutes } from "./oauth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
-import { getArticlesForRSS, getAllCategories } from "../db";
+import { getArticlesForRSS, getAllCategories, createArticle, getAllTags, getCategoryBySlug, getTagBySlug, setArticleTags, getUserByOpenId } from "../db";
+import { ENV } from "./env";
+import { generateImage } from "./imageGeneration";
+import { invokeLLM } from "./llm";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -158,6 +161,150 @@ Allow: /
       res.status(500).send('Error generating RSS feed');
     }
   });
+
+  // ==================== API REST pour tâches planifiées ====================
+  
+  // Middleware d'authentification par clé API
+  const apiKeyAuth = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const apiKey = req.headers['x-api-key'] || req.headers['authorization']?.replace('Bearer ', '');
+    
+    if (!apiKey || apiKey !== ENV.scheduledTaskApiKey) {
+      return res.status(401).json({ error: 'Unauthorized: Invalid API key' });
+    }
+    next();
+  };
+
+  // Endpoint pour créer un article via API (pour tâches planifiées)
+  app.post('/api/articles/create', apiKeyAuth, async (req, res) => {
+    try {
+      const { title, content, excerpt, categorySlug, tagSlugs, coverImage, status, generateCoverImage } = req.body;
+      
+      if (!title || !content) {
+        return res.status(400).json({ error: 'Title and content are required' });
+      }
+
+      // Get category by slug or use default
+      let categoryId = 1; // Default category
+      if (categorySlug) {
+        const category = await getCategoryBySlug(categorySlug);
+        if (category) categoryId = category.id;
+      }
+
+      // Get owner user for authorId
+      const ownerUser = await getUserByOpenId(ENV.ownerOpenId);
+      const authorId = ownerUser?.id || 1;
+
+      // Generate slug from title
+      const slug = title
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '')
+        + '-' + Date.now().toString(36);
+
+      // Generate cover image if requested
+      let finalCoverImage = coverImage;
+      if (generateCoverImage && !coverImage) {
+        try {
+          // Create optimized prompt using LLM
+          const promptResponse = await invokeLLM({
+            messages: [
+              {
+                role: 'system',
+                content: 'Tu es un expert en création de prompts pour la génération d\'images. Crée un prompt court et précis en anglais pour une image de couverture d\'article de blog professionnel. Le style doit être moderne, technologique, avec des tons cyan/turquoise sur fond sombre. Maximum 100 mots.'
+              },
+              {
+                role: 'user',
+                content: `Crée un prompt pour une image de couverture pour cet article:\nTitre: ${title}\nRésumé: ${excerpt || content.substring(0, 200)}`
+              }
+            ]
+          });
+          
+          const messageContent = promptResponse.choices?.[0]?.message?.content;
+          const imagePrompt = (typeof messageContent === 'string' ? messageContent : null) || 
+            `Professional blog cover image about ${title}, modern tech style, cyan tones, dark background`;
+          
+          const imageResult = await generateImage({ prompt: imagePrompt });
+          if (imageResult?.url) {
+            finalCoverImage = imageResult.url;
+          }
+        } catch (imgError) {
+          console.error('Image generation failed:', imgError);
+        }
+      }
+
+      // Calculate read time
+      const wordCount = content.split(/\s+/).length;
+      const readTime = Math.max(1, Math.ceil(wordCount / 200));
+
+      // Create article
+      const article = await createArticle({
+        title,
+        slug,
+        excerpt: excerpt || content.substring(0, 200) + '...',
+        content,
+        coverImage: finalCoverImage || null,
+        categoryId,
+        authorId,
+        status: status || 'published',
+        featured: false,
+        readTime,
+        publishedAt: status === 'published' ? new Date() : null,
+      });
+
+      // Add tags if provided
+      if (article && tagSlugs && Array.isArray(tagSlugs)) {
+        const allTags = await getAllTags();
+        const tagIds = tagSlugs
+          .map((slug: string) => allTags.find(t => t.slug === slug)?.id)
+          .filter((id: number | undefined): id is number => id !== undefined);
+        
+        if (tagIds.length > 0) {
+          await setArticleTags(article.id, tagIds);
+        }
+      }
+
+      res.json({ 
+        success: true, 
+        article: {
+          id: article?.id,
+          slug,
+          title,
+          url: `/articles/${slug}`
+        }
+      });
+    } catch (error) {
+      console.error('API article creation error:', error);
+      res.status(500).json({ error: 'Failed to create article', details: String(error) });
+    }
+  });
+
+  // Endpoint pour obtenir les catégories disponibles
+  app.get('/api/categories', apiKeyAuth, async (req, res) => {
+    try {
+      const categories = await getAllCategories();
+      res.json({ categories: categories.map(c => ({ id: c.id, name: c.name, slug: c.slug })) });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch categories' });
+    }
+  });
+
+  // Endpoint pour obtenir les tags disponibles
+  app.get('/api/tags', apiKeyAuth, async (req, res) => {
+    try {
+      const tags = await getAllTags();
+      res.json({ tags: tags.map(t => ({ id: t.id, name: t.name, slug: t.slug })) });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch tags' });
+    }
+  });
+
+  // Endpoint de santé pour vérifier que l'API fonctionne
+  app.get('/api/health', (req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  });
+
   // tRPC API
   app.use(
     "/api/trpc",
