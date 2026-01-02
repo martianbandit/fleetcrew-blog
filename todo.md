@@ -58,3 +58,9 @@
 - [x] Ajouter meta tags Twitter
 - [x] Ajouter URL canonique
 - [x] Changer la langue en français (fr)
+
+## Publication planifiée
+- [x] Analyser les services FleetCrew (FleetParts, KB, Diagnostic)
+- [x] Ajouter nouvelles catégories (Transport, Maintenance Prédictive, Logiciels, Diagnostic, Camions, Véhicules hors routes)
+- [x] Configurer tâche planifiée (lundi, mercredi, vendredi à 19h)
+- [x] Intégrer liens vers services FleetCrew dans les articles
