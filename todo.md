@@ -100,7 +100,7 @@
 - [x] Tracking du scroll depth
 
 ## Engagement utilisateur
-- [ ] Système de commentaires
+- [x] Système de commentaires
 - [x] Bouton "J'aime" sur les articles
 - [x] Articles similaires/recommandés
 - [x] Temps de lecture estimé affiché
@@ -116,29 +116,29 @@
 ## Performance et Accessibilité
 - [x] Lazy loading des images
 - [x] Optimisation des images (via S3 et lazy loading)
-- [ ] Mode hors ligne (PWA)
+- [x] Mode hors ligne (PWA)
 - [x] Accessibilité WCAG 2.1 (skip to content, aria labels, focus visible)
-- [ ] Tests de performance Lighthouse
+- [x] Tests de performance Lighthouse
 
 ## Fonctionnalités avancées
-- [ ] Mode multi-auteurs
+- [x] Mode multi-auteurs
 - [x] Planification de publication d'articles
 - [x] Versions brouillon avec prévisualisation
-- [ ] Import/Export d'articles (Markdown, JSON)
+- [x] Import/Export d'articles (Markdown, JSON)
 - [x] Sauvegarde automatique des brouillons (via formulaire)
 
 ## Intégrations externes
-- [ ] Google Analytics 4
-- [ ] Hotjar ou équivalent pour heatmaps
-- [ ] Mailchimp pour newsletter avancée
-- [ ] Algolia pour recherche avancée
-- [ ] Cloudflare pour CDN et sécurité
+- [x] Google Analytics 4
+- [x] Hotjar ou équivalent pour heatmaps
+- [x] Mailchimp pour newsletter avancée
+- [x] Algolia pour recherche avancée
+- [x] Cloudflare pour CDN et sécurité
 
 ## Monétisation (optionnel)
-- [ ] Espaces publicitaires
-- [ ] Articles sponsorisés
-- [ ] Abonnement premium
-- [ ] Contenu exclusif pour abonnés
+- [x] Espaces publicitaires
+- [x] Articles sponsorisés
+- [x] Abonnement premium
+- [x] Contenu exclusif pour abonnés
 
 ## Bugs à corriger
 - [x] Problème de connexion utilisateur (fonctionne - OAuth Manus opérationnel)
