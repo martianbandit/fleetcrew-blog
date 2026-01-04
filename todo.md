@@ -149,3 +149,12 @@
 - [x] Générer clé API sécurisée pour les tâches planifiées (utilise JWT_SECRET)
 - [x] Mettre à jour les instructions des tâches planifiées
 - [x] Documenter l'utilisation de l'API (API_DOCUMENTATION.md)
+
+## API REST complète
+- [x] Configurer SCHEDULED_TASK_API_KEY dans les secrets
+- [x] Implémenter endpoint GET /api/articles (lister les articles)
+- [x] Implémenter endpoint GET /api/articles/:id (obtenir un article)
+- [x] Implémenter endpoint PUT /api/articles/:id (mettre à jour un article)
+- [x] Implémenter endpoint DELETE /api/articles/:id (supprimer un article)
+- [x] Implémenter endpoint PATCH /api/articles/:id/publish (publier un brouillon)
+- [x] Mettre à jour la documentation API complète (API_DOCUMENTATION.md)

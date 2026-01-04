@@ -7,7 +7,7 @@ import { registerOAuthRoutes } from "./oauth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
-import { getArticlesForRSS, getAllCategories, createArticle, getAllTags, getCategoryBySlug, getTagBySlug, setArticleTags, getUserByOpenId } from "../db";
+import { getArticlesForRSS, getAllCategories, createArticle, getAllTags, getCategoryBySlug, getTagBySlug, setArticleTags, getUserByOpenId, getAllArticles, getArticleById, updateArticle, deleteArticle, getArticleTags } from "../db";
 import { ENV } from "./env";
 import { generateImage } from "./imageGeneration";
 import { invokeLLM } from "./llm";
@@ -297,6 +297,218 @@ Allow: /
       res.json({ tags: tags.map(t => ({ id: t.id, name: t.name, slug: t.slug })) });
     } catch (error) {
       res.status(500).json({ error: 'Failed to fetch tags' });
+    }
+  });
+
+  // Endpoint pour lister les articles
+  app.get('/api/articles', apiKeyAuth, async (req, res) => {
+    try {
+      const { status, limit, offset } = req.query;
+      const articles = await getAllArticles({
+        status: status as 'draft' | 'published' | 'archived' | undefined
+      });
+      
+      const limitNum = limit ? parseInt(limit as string) : undefined;
+      const offsetNum = offset ? parseInt(offset as string) : undefined;
+      
+      let result = articles;
+      if (offsetNum) result = result.slice(offsetNum);
+      if (limitNum) result = result.slice(0, limitNum);
+      
+      res.json({ 
+        articles: result.map(a => ({
+          id: a.id,
+          title: a.title,
+          slug: a.slug,
+          excerpt: a.excerpt,
+          status: a.status,
+          categoryId: a.categoryId,
+          authorId: a.authorId,
+          coverImage: a.coverImage,
+          publishedAt: a.publishedAt,
+          createdAt: a.createdAt,
+          url: `/articles/${a.slug}`
+        })),
+        total: articles.length
+      });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch articles' });
+    }
+  });
+
+  // Endpoint pour obtenir un article par ID
+  app.get('/api/articles/:id', apiKeyAuth, async (req, res) => {
+    try {
+      const articleId = parseInt(req.params.id);
+      if (isNaN(articleId)) {
+        return res.status(400).json({ error: 'Invalid article ID' });
+      }
+      
+      const article = await getArticleById(articleId);
+      if (!article) {
+        return res.status(404).json({ error: 'Article not found' });
+      }
+      
+      const tags = await getArticleTags(articleId);
+      
+      res.json({ 
+        article: {
+          ...article,
+          tags: tags.map(t => ({ id: t.id, name: t.name, slug: t.slug })),
+          url: `/articles/${article.slug}`
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch article' });
+    }
+  });
+
+  // Endpoint pour mettre à jour un article
+  app.put('/api/articles/:id', apiKeyAuth, async (req, res) => {
+    try {
+      const articleId = parseInt(req.params.id);
+      if (isNaN(articleId)) {
+        return res.status(400).json({ error: 'Invalid article ID' });
+      }
+      
+      const { title, content, excerpt, categorySlug, tagSlugs, coverImage, status, generateCoverImage } = req.body;
+      
+      const existing = await getArticleById(articleId);
+      if (!existing) {
+        return res.status(404).json({ error: 'Article not found' });
+      }
+      
+      const updateData: any = {};
+      
+      if (title) updateData.title = title;
+      if (content) updateData.content = content;
+      if (excerpt) updateData.excerpt = excerpt;
+      if (status) updateData.status = status;
+      if (coverImage) updateData.coverImage = coverImage;
+      
+      // Get category by slug if provided
+      if (categorySlug) {
+        const category = await getCategoryBySlug(categorySlug);
+        if (category) updateData.categoryId = category.id;
+      }
+      
+      // Generate cover image if requested and not provided
+      if (generateCoverImage && !coverImage) {
+        try {
+          const promptResponse = await invokeLLM({
+            messages: [
+              {
+                role: 'system',
+                content: 'Tu es un expert en création de prompts pour la génération d\'images. Crée un prompt court et précis en anglais pour une image de couverture d\'article de blog professionnel. Le style doit être moderne, technologique, avec des tons cyan/turquoise sur fond sombre. Maximum 100 mots.'
+              },
+              {
+                role: 'user',
+                content: `Crée un prompt pour une image de couverture pour cet article:\nTitre: ${title || existing.title}\nRésumé: ${excerpt || existing.excerpt || ''}`
+              }
+            ]
+          });
+          
+          const messageContent = promptResponse.choices?.[0]?.message?.content;
+          const imagePrompt = (typeof messageContent === 'string' ? messageContent : null) || 
+            `Professional blog cover image about ${title || existing.title}, modern tech style, cyan tones, dark background`;
+          
+          const imageResult = await generateImage({ prompt: imagePrompt });
+          if (imageResult?.url) {
+            updateData.coverImage = imageResult.url;
+          }
+        } catch (imgError) {
+          console.error('Image generation failed:', imgError);
+        }
+      }
+      
+      // Calculate read time if content changed
+      if (content) {
+        const wordCount = content.split(/\s+/).length;
+        updateData.readTime = Math.max(1, Math.ceil(wordCount / 200));
+      }
+      
+      // Update article
+      const updated = await updateArticle(articleId, updateData);
+      
+      // Update tags if provided
+      if (tagSlugs && Array.isArray(tagSlugs)) {
+        const allTags = await getAllTags();
+        const tagIds = tagSlugs
+          .map((slug: string) => allTags.find(t => t.slug === slug)?.id)
+          .filter((id: number | undefined): id is number => id !== undefined);
+        
+        if (tagIds.length > 0) {
+          await setArticleTags(articleId, tagIds);
+        }
+      }
+      
+      res.json({ 
+        success: true, 
+        article: {
+          id: updated?.id,
+          slug: updated?.slug,
+          title: updated?.title,
+          url: `/articles/${updated?.slug}`
+        }
+      });
+    } catch (error) {
+      console.error('API article update error:', error);
+      res.status(500).json({ error: 'Failed to update article', details: String(error) });
+    }
+  });
+
+  // Endpoint pour supprimer un article
+  app.delete('/api/articles/:id', apiKeyAuth, async (req, res) => {
+    try {
+      const articleId = parseInt(req.params.id);
+      if (isNaN(articleId)) {
+        return res.status(400).json({ error: 'Invalid article ID' });
+      }
+      
+      const existing = await getArticleById(articleId);
+      if (!existing) {
+        return res.status(404).json({ error: 'Article not found' });
+      }
+      
+      await deleteArticle(articleId);
+      
+      res.json({ success: true, message: 'Article deleted successfully' });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to delete article' });
+    }
+  });
+
+  // Endpoint pour publier un brouillon
+  app.patch('/api/articles/:id/publish', apiKeyAuth, async (req, res) => {
+    try {
+      const articleId = parseInt(req.params.id);
+      if (isNaN(articleId)) {
+        return res.status(400).json({ error: 'Invalid article ID' });
+      }
+      
+      const existing = await getArticleById(articleId);
+      if (!existing) {
+        return res.status(404).json({ error: 'Article not found' });
+      }
+      
+      const updated = await updateArticle(articleId, {
+        status: 'published',
+        publishedAt: new Date()
+      });
+      
+      res.json({ 
+        success: true, 
+        article: {
+          id: updated?.id,
+          slug: updated?.slug,
+          title: updated?.title,
+          status: updated?.status,
+          publishedAt: updated?.publishedAt,
+          url: `/articles/${updated?.slug}`
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to publish article' });
     }
   });
 
