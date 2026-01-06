@@ -158,3 +158,12 @@
 - [x] Implémenter endpoint DELETE /api/articles/:id (supprimer un article)
 - [x] Implémenter endpoint PATCH /api/articles/:id/publish (publier un brouillon)
 - [x] Mettre à jour la documentation API complète (API_DOCUMENTATION.md)
+
+## Publication automatique avec Perplexity
+- [x] Créer script de génération d'articles avec Perplexity API
+- [x] Sélection aléatoire de catégories
+- [x] Recherche d'actualité via Perplexity
+- [x] Génération de contenu optimisé SEO
+- [x] Insertion d'hyperliens vers services FleetCrew
+- [x] Génération automatique d'image de couverture
+- [x] Configuration de la tâche planifiée (lundi, mercredi, vendredi à 19h)
