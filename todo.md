@@ -177,3 +177,9 @@
 - [x] Générer image de couverture pour l'article IA
 - [x] Vérifier et corriger les tags de l'article (5 tags ajoutés)
 - [ ] Mettre à jour le script de publication pour inclure image automatiquement
+
+## Mise à jour tâches planifiées
+- [x] Ajouter génération automatique d'image de couverture aux 3 tâches planifiées
+  - fleetcrew_monday_news (lundi 19h) - actualités avec image
+  - fleetcrew_wednesday_technical (mercredi 19h) - tutoriels avec image
+  - fleetcrew_friday_innovation (vendredi 19h) - innovations avec image
