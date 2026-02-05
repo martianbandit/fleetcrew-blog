@@ -68,7 +68,7 @@ function generateRSSFeed(articles: any[], baseUrl: string): string {
     <lastBuildDate>${now}</lastBuildDate>
     <atom:link href="${baseUrl}/rss.xml" rel="self" type="application/rss+xml"/>
     <image>
-      <url>${baseUrl}/fleetcrew-icon.png</url>
+      <url>https://files.manuscdn.com/user_upload_by_module/session_file/310419663032418579/LoCpTFkzqhhIzFAe.png</url>
       <title>FleetCrew Blog</title>
       <link>${baseUrl}</link>
     </image>

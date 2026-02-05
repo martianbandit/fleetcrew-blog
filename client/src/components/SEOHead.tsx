@@ -31,7 +31,7 @@ export function SEOHead({
 }: SEOHeadProps) {
   const siteName = "FleetCrew Blog";
   const defaultDescription = "Blog spécialisé en gestion de flottes au Québec. Articles sur la mécanique, technologies, IA, maintenance préventive et conformité SAAQ.";
-  const defaultImage = "/fleetcrew-icon.png";
+  const defaultImage = "https://files.manuscdn.com/user_upload_by_module/session_file/310419663032418579/LoCpTFkzqhhIzFAe.png";
 
   const fullTitle = title ? `${title} | ${siteName}` : siteName;
   const metaDescription = description || defaultDescription;

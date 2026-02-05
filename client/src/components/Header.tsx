@@ -36,7 +36,7 @@ export default function Header() {
         <Link href="/" className="flex items-center gap-2 group">
           <div className="flex items-center justify-center w-10 h-10 rounded-lg overflow-hidden group-hover:scale-105 transition-transform">
             <img 
-              src="/fleetcrew-icon.png" 
+              src="https://files.manuscdn.com/user_upload_by_module/session_file/310419663032418579/LoCpTFkzqhhIzFAe.png" 
               alt="FleetCrew" 
               className="w-10 h-10 object-contain"
             />

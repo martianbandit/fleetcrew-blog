@@ -37,7 +37,7 @@ export default function Footer() {
             <Link href="/" className="flex items-center gap-2 mb-4">
               <div className="flex items-center justify-center w-10 h-10 rounded-lg overflow-hidden">
                 <img 
-                  src="/fleetcrew-icon.png" 
+                  src="https://files.manuscdn.com/user_upload_by_module/session_file/310419663032418579/LoCpTFkzqhhIzFAe.png" 
                   alt="FleetCrew" 
                   className="w-10 h-10 object-contain"
                 />
