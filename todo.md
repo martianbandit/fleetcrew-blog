@@ -172,3 +172,8 @@
 - [x] Créer tâche lundi - Focus actualités et tendances (fleetcrew_monday_news)
 - [x] Créer tâche mercredi - Focus technique et tutoriels (fleetcrew_wednesday_technical)
 - [x] Créer tâche vendredi - Focus innovation et futur (fleetcrew_friday_innovation)
+
+## Corrections article de test
+- [x] Générer image de couverture pour l'article IA
+- [x] Vérifier et corriger les tags de l'article (5 tags ajoutés)
+- [ ] Mettre à jour le script de publication pour inclure image automatiquement
