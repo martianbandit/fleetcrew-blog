@@ -167,3 +167,8 @@
 - [x] Insertion d'hyperliens vers services FleetCrew
 - [x] Génération automatique d'image de couverture
 - [x] Configuration de la tâche planifiée (lundi, mercredi, vendredi à 19h)
+
+## Optimisation des tâches planifiées
+- [x] Créer tâche lundi - Focus actualités et tendances (fleetcrew_monday_news)
+- [x] Créer tâche mercredi - Focus technique et tutoriels (fleetcrew_wednesday_technical)
+- [x] Créer tâche vendredi - Focus innovation et futur (fleetcrew_friday_innovation)
