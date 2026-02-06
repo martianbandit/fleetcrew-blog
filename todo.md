@@ -183,3 +183,7 @@
   - fleetcrew_monday_news (lundi 19h) - actualités avec image
   - fleetcrew_wednesday_technical (mercredi 19h) - tutoriels avec image
   - fleetcrew_friday_innovation (vendredi 19h) - innovations avec image
+
+## Corrections SEO page d'accueil
+- [x] Réduire les mots-clés de 10 à 6 mots-clés ciblés
+- [x] Ajuster la description meta de 164 à 158 caractères
