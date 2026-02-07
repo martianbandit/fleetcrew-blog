@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { FleetCrewPartsAd } from "@/components/FleetCrewPartsAd";
 import ArticleCard from "@/components/ArticleCard";
 import NewsletterForm from "@/components/NewsletterForm";
 import { Button } from "@/components/ui/button";
@@ -145,6 +146,13 @@ export default function Home() {
                 );
               })}
             </div>
+          </div>
+        </section>
+
+        {/* FleetCrew Parts Ad Banner */}
+        <section className="py-8 md:py-12">
+          <div className="container">
+            <FleetCrewPartsAd />
           </div>
         </section>
 

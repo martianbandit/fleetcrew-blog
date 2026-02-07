@@ -206,3 +206,15 @@
 - [x] Mettre à jour les 3 tâches planifiées avec référence au guide API
 - [x] Intégrer l'alternance des 3 prompts d'image dans les tâches
 - [x] Mettre à jour la documentation SCHEDULED_TASKS_DOCUMENTATION.md
+
+## Bug: Tâches planifiées - Erreur 401
+- [x] Résoudre le problème: SCHEDULED_TASK_API_KEY non disponible dans l'environnement des tâches planifiées
+- [x] Trouver une solution alternative d'authentification (clé API en dur dans les prompts)
+- [x] Mettre à jour les 3 tâches planifiées avec la nouvelle approche
+- [x] Tester la solution
+
+## Bannière publicitaire FleetCrew Parts
+- [x] Analyser le site https://fleetcrewparts.base44.app/home
+- [x] Créer une image de bannière publicitaire attractive
+- [x] Intégrer la bannière avec lien dans le blog
+- [x] Tester l'affichage et le lien

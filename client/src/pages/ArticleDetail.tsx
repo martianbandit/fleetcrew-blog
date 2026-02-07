@@ -1,6 +1,7 @@
 import { useParams, Link } from "wouter";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { FleetCrewPartsAd } from "@/components/FleetCrewPartsAd";
 import NewsletterForm from "@/components/NewsletterForm";
 import { SocialShareInline } from "@/components/SocialShare";
 import SEOHead from "@/components/SEOHead";
@@ -230,6 +231,15 @@ export default function ArticleDetail() {
                 categoryId={article.category?.id}
                 limit={3}
               />
+            </div>
+          </div>
+        </section>
+
+        {/* FleetCrew Parts Ad Banner */}
+        <section className="py-8">
+          <div className="container">
+            <div className="max-w-4xl mx-auto">
+              <FleetCrewPartsAd />
             </div>
           </div>
         </section>
