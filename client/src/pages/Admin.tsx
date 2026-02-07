@@ -2,7 +2,9 @@ import { useState } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
 import Header from "@/components/Header";
+import { HeaderAd } from "@/components/HeaderAd";
 import Footer from "@/components/Footer";
+import { FooterAd } from "@/components/FooterAd";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -507,6 +509,7 @@ export default function Admin() {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Header />
+      <HeaderAd />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-2xl font-bold mb-4">Connexion requise</h1>
@@ -518,7 +521,8 @@ export default function Admin() {
             </Button>
           </div>
         </main>
-        <Footer />
+        <FooterAd />
+      <Footer />
       </div>
     );
   }
@@ -527,6 +531,7 @@ export default function Admin() {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Header />
+      <HeaderAd />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-2xl font-bold mb-4">Accès refusé</h1>
@@ -538,7 +543,8 @@ export default function Admin() {
             </Button>
           </div>
         </main>
-        <Footer />
+        <FooterAd />
+      <Footer />
       </div>
     );
   }
@@ -546,6 +552,7 @@ export default function Admin() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
+      <HeaderAd />
       
       <main className="flex-1 py-8">
         <div className="container">
@@ -831,6 +838,7 @@ export default function Admin() {
         </div>
       </main>
 
+      <FooterAd />
       <Footer />
     </div>
   );

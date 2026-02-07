@@ -223,3 +223,12 @@
 - [x] Créer une bannière mettant en avant l'IA et l'industrie du camion
 - [x] Configurer l'alternance automatique entre FleetCrew Parts et FleetInspect
 - [x] Tester l'affichage et le lien
+
+## Emplacements publicitaires statiques (Header & Footer)
+- [x] Analyser la structure actuelle du header et footer
+- [x] Créer un composant HeaderAd pour le header
+- [x] Créer un composant FooterAd pour le footer
+- [x] Intégrer HeaderAd dans toutes les pages
+- [x] Intégrer FooterAd dans toutes les pages
+- [x] Optimiser selon les bonnes pratiques (lazy loading, accessibilité, performance)
+- [x] Tester l'affichage sur toutes les pages

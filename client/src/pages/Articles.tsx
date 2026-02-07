@@ -1,6 +1,8 @@
 import { useState, useMemo } from "react";
 import Header from "@/components/Header";
+import { HeaderAd } from "@/components/HeaderAd";
 import Footer from "@/components/Footer";
+import { FooterAd } from "@/components/FooterAd";
 import ArticleCard from "@/components/ArticleCard";
 import NewsletterForm from "@/components/NewsletterForm";
 import { Button } from "@/components/ui/button";
@@ -60,6 +62,7 @@ export default function Articles() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
+      <HeaderAd />
       
       <main className="flex-1">
         {/* Hero */}
@@ -170,6 +173,7 @@ export default function Articles() {
         </section>
       </main>
 
+      <FooterAd />
       <Footer />
     </div>
   );

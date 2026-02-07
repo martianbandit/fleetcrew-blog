@@ -1,5 +1,7 @@
 import Header from "@/components/Header";
+import { HeaderAd } from "@/components/HeaderAd";
 import Footer from "@/components/Footer";
+import { FooterAd } from "@/components/FooterAd";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -57,6 +59,7 @@ export default function Contact() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
+      <HeaderAd />
       
       <main className="flex-1">
         {/* Hero Section */}
@@ -271,6 +274,7 @@ export default function Contact() {
         </section>
       </main>
 
+      <FooterAd />
       <Footer />
     </div>
   );

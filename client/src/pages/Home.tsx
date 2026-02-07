@@ -1,5 +1,7 @@
 import Header from "@/components/Header";
+import { HeaderAd } from "@/components/HeaderAd";
 import Footer from "@/components/Footer";
+import { FooterAd } from "@/components/FooterAd";
 import { FleetCrewPartsAd } from "@/components/FleetCrewPartsAd";
 import ArticleCard from "@/components/ArticleCard";
 import NewsletterForm from "@/components/NewsletterForm";
@@ -65,6 +67,7 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
+      <HeaderAd />
       
       <main className="flex-1">
         {/* Hero Section */}
@@ -253,6 +256,7 @@ export default function Home() {
         </section>
       </main>
 
+      <FooterAd />
       <Footer />
     </div>
   );

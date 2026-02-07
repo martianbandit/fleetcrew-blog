@@ -1,6 +1,8 @@
 import { useParams, Link } from "wouter";
 import Header from "@/components/Header";
+import { HeaderAd } from "@/components/HeaderAd";
 import Footer from "@/components/Footer";
+import { FooterAd } from "@/components/FooterAd";
 import { FleetCrewPartsAd } from "@/components/FleetCrewPartsAd";
 import NewsletterForm from "@/components/NewsletterForm";
 import { SocialShareInline } from "@/components/SocialShare";
@@ -44,10 +46,12 @@ export default function ArticleDetail() {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Header />
+      <HeaderAd />
         <main className="flex-1 flex items-center justify-center">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </main>
-        <Footer />
+        <FooterAd />
+      <Footer />
       </div>
     );
   }
@@ -56,6 +60,7 @@ export default function ArticleDetail() {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Header />
+      <HeaderAd />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-2xl font-bold mb-4">Article non trouvé</h1>
@@ -67,7 +72,8 @@ export default function ArticleDetail() {
             </Button>
           </div>
         </main>
-        <Footer />
+        <FooterAd />
+      <Footer />
       </div>
     );
   }
@@ -94,6 +100,7 @@ export default function ArticleDetail() {
         tags={articleTags}
       />
       <Header />
+      <HeaderAd />
       
       <main className="flex-1">
         {/* Hero */}
@@ -254,6 +261,7 @@ export default function ArticleDetail() {
         </section>
       </main>
 
+      <FooterAd />
       <Footer />
     </div>
   );
