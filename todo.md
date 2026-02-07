@@ -187,3 +187,12 @@
 ## Corrections SEO page d'accueil
 - [x] Réduire les mots-clés de 10 à 6 mots-clés ciblés
 - [x] Ajuster la description meta de 164 à 158 caractères
+
+## Diagnostic tâches planifiées
+- [x] Diagnostiquer pourquoi les tâches planifiées ne publient pas d'articles
+- [x] Vérifier la configuration de SCHEDULED_TASK_API_KEY
+- [x] Tester les endpoints API manuellement
+- [x] Créer les 3 tâches planifiées réelles dans le système Manus
+  - [x] Tâche lundi 19h - Actualités et tendances avec Perplexity + navigateur
+  - [x] Tâche mercredi 19h - Analyses techniques et cas pratiques avec recherche approfondie
+  - [x] Tâche vendredi 19h - Innovation et vision prospective avec sources variées
