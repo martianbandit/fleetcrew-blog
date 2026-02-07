@@ -1,5 +1,7 @@
 # FleetCrew Blog - API REST Documentation Complète
 
+> 📘 **Nouveau !** Consultez le [Guide Pratique de Publication](./GUIDE_PUBLICATION_API.md) pour un tutoriel pas-à-pas avec exemples complets.
+
 ## Authentification
 
 L'API utilise une authentification par clé API dédiée (`SCHEDULED_TASK_API_KEY`).

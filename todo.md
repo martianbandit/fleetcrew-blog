@@ -196,3 +196,7 @@
   - [x] Tâche lundi 19h - Actualités et tendances avec Perplexity + navigateur
   - [x] Tâche mercredi 19h - Analyses techniques et cas pratiques avec recherche approfondie
   - [x] Tâche vendredi 19h - Innovation et vision prospective avec sources variées
+
+## Documentation API
+- [x] Créer un guide pratique de publication via l'API
+- [x] Mettre à jour API_DOCUMENTATION.md avec le guide
