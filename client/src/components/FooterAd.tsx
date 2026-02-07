@@ -1,17 +1,11 @@
-import { ExternalLink, Truck, Wrench, Brain } from 'lucide-react';
+import { ExternalLink, Wrench, Truck, Brain, ArrowRight } from 'lucide-react';
 
 /**
  * FooterAd Component
  * 
- * Emplacement publicitaire statique dans le footer, visible sur toutes les pages.
- * Format: Grille de 3 cartes promotionnelles pour les services FleetCrew
- * 
- * Bonnes pratiques implémentées:
- * - Pas d'alternance (affichage permanent des 3 services)
- * - Design cohérent avec le footer
- * - Accessibilité complète
- * - Responsive (1 colonne sur mobile, 3 sur desktop)
- * - Icônes Lucide pour la cohérence visuelle
+ * Emplacement publicitaire statique avant le footer, visible sur toutes les pages.
+ * Grille de 3 cartes promotionnelles pour les services FleetCrew.
+ * Responsive : empilées sur mobile, grille 3 colonnes sur desktop.
  */
 
 const footerAds = [
@@ -20,85 +14,120 @@ const footerAds = [
     url: 'https://fleetcrewparts.base44.app/home',
     icon: Wrench,
     title: 'FleetCrew Parts',
-    description: 'Comparateur intelligent de pièces détachées',
+    description: 'Comparateur intelligent de pièces détachées pour camions. Trouvez les meilleures pièces au meilleur prix.',
     cta: 'Trouver mes pièces',
-    color: 'cyan'
+    gradient: 'linear-gradient(135deg, #0891b2 0%, #1d4ed8 100%)',
+    iconBg: 'rgba(6, 182, 212, 0.15)',
+    iconColor: '#06b6d4',
+    borderColor: 'rgba(6, 182, 212, 0.25)',
+    hoverBorderColor: 'rgba(6, 182, 212, 0.5)',
   },
   {
     id: 'fleetinspect',
     url: 'https://fleetinpect.base44.app',
     icon: Truck,
     title: 'FleetInspect',
-    description: 'Inspection de véhicules assistée par IA',
+    description: 'Inspection de véhicules lourds assistée par intelligence artificielle. Détection automatique des défauts.',
     cta: 'Essayer gratuitement',
-    color: 'purple'
+    gradient: 'linear-gradient(135deg, #7c3aed 0%, #be185d 100%)',
+    iconBg: 'rgba(139, 92, 246, 0.15)',
+    iconColor: '#8b5cf6',
+    borderColor: 'rgba(139, 92, 246, 0.25)',
+    hoverBorderColor: 'rgba(139, 92, 246, 0.5)',
   },
   {
     id: 'fleetcrew-intelligence',
     url: 'https://fleetcrew-kb75upsk.manus.space',
     icon: Brain,
     title: 'FleetCrew Intelligence',
-    description: 'Analytics et insights pour votre flotte',
+    description: 'Analytics et insights en temps réel pour optimiser la gestion de votre flotte de véhicules.',
     cta: 'Découvrir',
-    color: 'emerald'
+    gradient: 'linear-gradient(135deg, #059669 0%, #0f766e 100%)',
+    iconBg: 'rgba(16, 185, 129, 0.15)',
+    iconColor: '#10b981',
+    borderColor: 'rgba(16, 185, 129, 0.25)',
+    hoverBorderColor: 'rgba(16, 185, 129, 0.5)',
   }
 ];
 
 export function FooterAd() {
   return (
-    <div className="border-t border-border/40 bg-muted/20 py-8">
+    <section 
+      className="border-t border-border/30 py-10 md:py-14"
+      aria-label="Solutions FleetCrew"
+    >
       <div className="container">
-        <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-6 text-center">
-          Nos Solutions FleetCrew
-        </h3>
+        {/* Titre de section */}
+        <div className="text-center mb-8 md:mb-10">
+          <span className="inline-block text-[11px] font-semibold uppercase tracking-[0.2em] text-primary/70 mb-2">
+            Nos Solutions
+          </span>
+          <h3 className="text-lg md:text-xl font-bold text-foreground">
+            Découvrez l'écosystème <span className="text-primary">FleetCrew</span>
+          </h3>
+          <p className="text-sm text-muted-foreground mt-2 max-w-md mx-auto">
+            Des outils intelligents conçus pour les professionnels du transport au Québec
+          </p>
+        </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Grille de cartes */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           {footerAds.map((ad) => {
             const Icon = ad.icon;
-            const colorMap = {
-              cyan: {
-                bg: 'bg-cyan-500/10',
-                icon: 'text-cyan-600',
-                hover: 'hover:bg-cyan-500/20 hover:border-cyan-500/50'
-              },
-              purple: {
-                bg: 'bg-purple-500/10',
-                icon: 'text-purple-600',
-                hover: 'hover:bg-purple-500/20 hover:border-purple-500/50'
-              },
-              emerald: {
-                bg: 'bg-emerald-500/10',
-                icon: 'text-emerald-600',
-                hover: 'hover:bg-emerald-500/20 hover:border-emerald-500/50'
-              }
-            } as const;
-            const colorClasses = colorMap[ad.color as keyof typeof colorMap];
-
             return (
               <a
                 key={ad.id}
                 href={ad.url}
                 target="_blank"
-                rel="noopener noreferrer"
-                className={`group flex flex-col items-center text-center p-6 rounded-lg border border-border/40 ${colorClasses.bg} ${colorClasses.hover} transition-all duration-300`}
-                aria-label={`Découvrir ${ad.title}`}
+                rel="noopener noreferrer sponsored"
+                className="group relative flex flex-col p-5 md:p-6 rounded-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/10"
+                aria-label={`Découvrir ${ad.title} - ${ad.description}`}
+                style={{
+                  border: '1px solid',
+                  borderColor: ad.borderColor,
+                  backgroundColor: 'rgba(255,255,255,0.02)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = ad.hoverBorderColor;
+                  e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.04)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = ad.borderColor;
+                  e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.02)';
+                }}
               >
-                <div className={`w-12 h-12 rounded-full ${colorClasses.bg} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
-                  <Icon className={`w-6 h-6 ${colorClasses.icon}`} />
+                {/* Icône */}
+                <div 
+                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300"
+                  style={{ backgroundColor: ad.iconBg }}
+                >
+                  <Icon className="w-6 h-6" style={{ color: ad.iconColor }} />
                 </div>
                 
-                <h4 className="font-semibold text-foreground mb-2">{ad.title}</h4>
-                <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{ad.description}</p>
+                {/* Contenu */}
+                <h4 className="font-bold text-foreground mb-2 text-base">{ad.title}</h4>
+                <p className="text-sm text-muted-foreground mb-5 leading-relaxed flex-1">{ad.description}</p>
                 
-                <div className={`flex items-center gap-2 text-sm font-medium ${colorClasses.icon} group-hover:gap-3 transition-all`}>
+                {/* CTA */}
+                <div 
+                  className="flex items-center gap-2 text-sm font-semibold transition-all duration-300 group-hover:gap-3"
+                  style={{ color: ad.iconColor }}
+                >
                   <span>{ad.cta}</span>
-                  <ExternalLink className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </div>
+
+                {/* Badge sponsorisé discret */}
+                <div className="absolute top-3 right-3">
+                  <span className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground/50">
+                    Sponsorisé
+                  </span>
                 </div>
               </a>
             );
           })}
         </div>
       </div>
-    </div>
+    </section>
   );
 }

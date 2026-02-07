@@ -232,3 +232,10 @@
 - [x] Intégrer FooterAd dans toutes les pages
 - [x] Optimiser selon les bonnes pratiques (lazy loading, accessibilité, performance)
 - [x] Tester l'affichage sur toutes les pages
+
+## Optimisation emplacements publicitaires
+- [x] Auditer HeaderAd et FooterAd sur toutes les pages (7 pages vérifiées)
+- [x] Optimiser la visibilité (contraste, taille, espacement)
+- [x] Assurer la cohérence visuelle entre les pages (gradients, badges, couleurs)
+- [x] Optimiser pour mobile (responsive, hidden sm)
+- [x] Tester sur toutes les pages (Management UI Preview fonctionnel)

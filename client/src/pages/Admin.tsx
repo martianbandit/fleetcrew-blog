@@ -509,7 +509,7 @@ export default function Admin() {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Header />
-      <HeaderAd />
+        <HeaderAd />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-2xl font-bold mb-4">Connexion requise</h1>
@@ -522,7 +522,7 @@ export default function Admin() {
           </div>
         </main>
         <FooterAd />
-      <Footer />
+        <Footer />
       </div>
     );
   }
@@ -531,7 +531,7 @@ export default function Admin() {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Header />
-      <HeaderAd />
+        <HeaderAd />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-2xl font-bold mb-4">Accès refusé</h1>
@@ -544,7 +544,7 @@ export default function Admin() {
           </div>
         </main>
         <FooterAd />
-      <Footer />
+        <Footer />
       </div>
     );
   }
