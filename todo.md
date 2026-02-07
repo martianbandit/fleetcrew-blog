@@ -218,3 +218,8 @@
 - [x] Créer une image de bannière publicitaire attractive
 - [x] Intégrer la bannière avec lien dans le blog
 - [x] Tester l'affichage et le lien
+
+## Bannière publicitaire FleetInspect
+- [x] Créer une bannière mettant en avant l'IA et l'industrie du camion
+- [x] Configurer l'alternance automatique entre FleetCrew Parts et FleetInspect
+- [x] Tester l'affichage et le lien
