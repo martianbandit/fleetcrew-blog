@@ -2,19 +2,55 @@
 
 ## Vue d'ensemble
 
-Le blog FleetCrew utilise 3 tâches planifiées automatiques pour publier du contenu diversifié et de haute qualité 3 fois par semaine. Chaque tâche a un angle éditorial unique et utilise des méthodologies de recherche différentes.
+Le blog FleetCrew utilise 3 tâches planifiées automatiques pour publier du contenu diversifié et de haute qualité 3 fois par semaine. Chaque tâche a un angle éditorial unique, utilise des méthodologies de recherche différentes, et génère une image de couverture dans un style cyberpunk distinctif.
+
+> **Guide de référence :** Chaque tâche doit consulter le fichier [GUIDE_PUBLICATION_API.md](./GUIDE_PUBLICATION_API.md) pour les bonnes pratiques de publication, la checklist et les conseils SEO.
 
 ## Architecture des Tâches
 
 ### Calendrier de Publication
 
-| Jour | Heure | Tâche | Focus |
-|------|-------|-------|-------|
-| Lundi | 19h00 | Publication Actualités | News et tendances du secteur |
-| Mercredi | 19h00 | Publication Technique | Guides pratiques et analyses |
-| Vendredi | 19h00 | Publication Innovation | Vision prospective et futur |
+| Jour | Heure | Tâche | Focus | Style Image |
+|------|-------|-------|-------|-------------|
+| Lundi | 19h00 | Publication Actualités | News et tendances du secteur | Vert Néon / Atelier |
+| Mercredi | 19h00 | Publication Technique | Guides pratiques et analyses | Violet-Orange / Cyberpunk |
+| Vendredi | 19h00 | Publication Innovation | Vision prospective et futur | Bleu Cyan-Rose / Futuriste |
 
 **Fuseau horaire :** Heure de l'Est (ET) - Québec
+
+---
+
+## Images de Couverture : Alternance de 3 Styles
+
+Chaque tâche utilise un prompt d'image spécifique pour maintenir une identité visuelle cohérente tout en offrant de la variété. Le style est inspiré du cyberpunk industriel avec des camions hyper-détaillés, des éclairages néon et des personnages cybernétiques.
+
+### Prompt 1 - LUNDI (Vert Néon / Atelier Mécanique)
+
+```
+A hyper-detailed cyberpunk heavy truck (Peterbilt style) in a futuristic mechanic workshop, exposed engine with visible circuit board patterns and glowing green neon lights, a small cybernetic robot mechanic kneeling beside the truck working on the wheel, green neon LED strips illuminating the floor and truck body, holographic diagnostic screens floating in the background showing data charts, dark industrial atmosphere, metallic textures, chrome details, scattered mechanic tools and tires on the ground, ultra-realistic CGI render, 8K quality, cinematic lighting with dominant green and teal neon glow
+```
+
+### Prompt 2 - MERCREDI (Violet/Orange / Personnage Cyberpunk)
+
+```
+A massive cyberpunk semi-truck (Kenworth style) with transparent body panels revealing intricate internal machinery and glowing purple and orange circuit patterns, a mysterious hooded cybernetic figure standing beside the truck with red glowing eyes, futuristic garage environment with neon tube lights on ceiling, orange amber underglow on the truck, purple and magenta holographic displays on walls, wet metallic floor reflecting neon lights, industrial cables and pipes visible, ultra-detailed mechanical components, photoreal CGI render, 8K quality, cinematic dark atmosphere with purple magenta and warm orange neon lighting
+```
+
+### Prompt 3 - VENDREDI (Bleu Cyan / Skyline Futuriste)
+
+```
+A chrome-plated cyberpunk heavy truck (Western Star style) with transparent glass-like body showing complex blue-lit internal systems, a sleek humanoid chrome robot standing next to the truck, futuristic city skyline visible through large workshop window with pink and blue neon buildings, bright cyan and electric blue LED strips along truck frame and wheels, holographic fleet management dashboard floating above the truck hood, polished metal floor with blue neon grid lines, high-tech diagnostic equipment around, ultra-realistic CGI render, 8K quality, cinematic lighting with dominant cyan blue and pink magenta neon accents
+```
+
+### Processus de Génération d'Image
+
+Les tâches planifiées **ne doivent PAS** utiliser `generateCoverImage: true`. À la place, elles doivent :
+
+1. Générer l'image avec le prompt correspondant au jour de la semaine
+2. Uploader l'image sur S3 via `storagePut`
+3. Utiliser le champ `coverImage` avec l'URL S3 retournée
+
+---
 
 ## Tâche 1 : Publication Lundi (Actualités)
 
@@ -41,14 +77,9 @@ Publier un article d'actualité captivant sur les dernières nouvelles du secteu
 
 ### Style d'Écriture
 - **Ton :** Journalistique et factuel
-- **Longueur :** 900-1200 mots
-- **Structure :** Titre accrocheur + 3-4 sections + tableau de données + conclusion
+- **Longueur :** 2500+ mots (minimum 10 minutes de lecture)
+- **Structure :** Titre accrocheur + 4-6 sections avec H2/H3 + tableaux de données + conclusion
 - **Éléments clés :** Chiffres concrets, citations récentes, impact pour gestionnaires québécois
-
-### Exemple de Titre
-- "SAAQ 2026 : Nouvelles Exigences pour les Flottes de Camions Lourds"
-- "Le Marché du Transport Québécois en Pleine Transformation"
-- "Statistiques Chocs : L'État des Flottes Québécoises en 2026"
 
 ---
 
@@ -81,14 +112,9 @@ Créer un guide pratique ou une analyse technique approfondie pour les gestionna
 
 ### Style d'Écriture
 - **Ton :** Pédagogique et précis
-- **Longueur :** 1000-1400 mots
+- **Longueur :** 2500+ mots (minimum 10 minutes de lecture)
 - **Structure :** Guide complet avec étapes numérotées + tableaux + checklist + erreurs à éviter
 - **Éléments clés :** Instructions actionnables, termes techniques expliqués, astuces pro
-
-### Exemple de Titre
-- "Guide Complet : Diagnostic des Codes DTC sur Camions Freightliner"
-- "Comment Optimiser la Consommation de Carburant : Méthode Professionnelle"
-- "Maintenance Hivernale des Flottes : Checklist Complète pour le Québec"
 
 ---
 
@@ -123,20 +149,15 @@ Créer un article inspirant sur les innovations et tendances futures qui transfo
 
 ### Style d'Écriture
 - **Ton :** Visionnaire mais réaliste
-- **Longueur :** 1100-1500 mots
+- **Longueur :** 2500+ mots (minimum 10 minutes de lecture)
 - **Structure :** État des lieux + technologies émergentes + scénarios 2028-2030 + préparation + vision
 - **Éléments clés :** Timeline, projections chiffrées, storytelling, questions rhétoriques
-
-### Exemple de Titre
-- "L'Avenir des Camions Autonomes : Ce qui Attend les Flottes Québécoises"
-- "Hydrogène vs Électrique : La Révolution Silencieuse du Transport Lourd"
-- "2030 : À Quoi Ressemblera la Gestion de Flottes Propulsée par l'IA ?"
 
 ---
 
 ## Intégration FleetCrew (Obligatoire)
 
-Chaque article DOIT inclure 2-3 liens contextuels vers les services FleetCrew :
+Chaque article DOIT inclure 3 liens contextuels vers les services FleetCrew, intégrés de manière subtile et naturelle (jamais promotionnelle).
 
 ### Services à Référencer
 
@@ -148,14 +169,11 @@ Chaque article DOIT inclure 2-3 liens contextuels vers les services FleetCrew :
 
 ### Exemples d'Intégration Naturelle
 
-**Actualités :**
-> "Pour suivre l'impact de ces nouvelles réglementations sur votre flotte, [FleetCrew Intelligence](https://fleetcrew-kb75upsk.manus.space) offre des tableaux de bord en temps réel."
+**Bon exemple (contextuel) :**
+> "Pour faciliter cette conformité, des plateformes comme [FleetCrew Intelligence](https://fleetcrew-kb75upsk.manus.space) offrent des tableaux de bord intégrés permettant de surveiller en temps réel le respect des heures de conduite."
 
-**Technique :**
-> "Besoin de pièces de rechange pour votre système de freinage ? Consultez [FleetParts](https://fleetparts.manus.space/) pour un catalogue complet avec disponibilité en temps réel."
-
-**Innovation :**
-> "La transition vers l'électrique nécessite une gestion d'inventaire repensée. Découvrez comment [notre système de gestion](https://8xhpiqcen0qp.manus.space) s'adapte aux nouvelles technologies."
+**Mauvais exemple (promotionnel) :**
+> "Utilisez FleetCrew Intelligence, le meilleur logiciel de gestion de flotte!"
 
 ---
 
@@ -164,36 +182,37 @@ Chaque article DOIT inclure 2-3 liens contextuels vers les services FleetCrew :
 ### Flux de Travail
 
 ```
-1. Déclenchement (cron)
+1. Déclenchement (cron lundi/mercredi/vendredi 19h)
    ↓
-2. Recherche Perplexity
+2. Consulter GUIDE_PUBLICATION_API.md pour bonnes pratiques
    ↓
-3. Navigation web (2-5 sources)
+3. Recherche Perplexity + Navigation web (2-5 sources)
    ↓
 4. Sauvegarde des données dans fichier temporaire
    ↓
-5. Rédaction de l'article (900-1500 mots)
+5. Rédaction de l'article (2500+ mots, 10 min de lecture)
    ↓
-6. Sélection catégorie + tags
+6. Sélection catégorie + 4-6 tags
    ↓
-7. Appel API REST
+7. Génération image avec prompt du jour (vert/violet/bleu)
    ↓
-8. Génération image de couverture (IA)
+8. Upload image sur S3
    ↓
-9. Publication automatique
+9. Création payload JSON avec Python json.dump()
+   ↓
+10. Publication via API REST (POST /api/articles/create)
+   ↓
+11. Vérification de la publication
 ```
 
-### Endpoint API Utilisé
+### Endpoint API
 
 ```bash
-POST https://3000-i4jp2kjg3m3gyuhg3iz3f-3d73e010.us2.manus.computer/api/articles/create
+POST https://fleetcrew.blog/api/articles/create
 ```
 
 ### Authentification
 
-La variable d'environnement `SCHEDULED_TASK_API_KEY` est automatiquement injectée dans chaque tâche planifiée. Elle contient une clé API de 95 caractères qui authentifie les requêtes.
-
-**Header d'authentification :**
 ```
 X-API-Key: $SCHEDULED_TASK_API_KEY
 ```
@@ -203,16 +222,16 @@ X-API-Key: $SCHEDULED_TASK_API_KEY
 ```json
 {
   "title": "Titre de l'article",
-  "content": "Contenu Markdown complet...",
+  "content": "Contenu Markdown complet (2500+ mots)...",
   "excerpt": "Résumé de 150-200 caractères",
   "categorySlug": "slug-de-categorie",
-  "tagSlugs": ["tag1", "tag2", "tag3", "tag4", "tag5"],
-  "generateCoverImage": true,
+  "tagSlugs": ["tag1", "tag2", "tag3", "tag4"],
+  "coverImage": "https://url-s3-de-limage-generee.jpg",
   "status": "published"
 }
 ```
 
-**Important :** `generateCoverImage: true` est OBLIGATOIRE pour générer automatiquement une image de couverture via IA.
+**Important :** Utiliser `coverImage` avec l'URL S3 de l'image générée, **PAS** `generateCoverImage: true`.
 
 ---
 
@@ -220,58 +239,19 @@ X-API-Key: $SCHEDULED_TASK_API_KEY
 
 ### Tags Recommandés par Thème
 
-**Actualités :**
-- maintenance, flotte, quebec, saaq, technologie, innovation, reglementation, transport, camions, cout, securite
+| Thème | Tags suggérés |
+|-------|--------------|
+| Actualités | maintenance, flotte, quebec, saaq, technologie, innovation, reglementation, transport, camions, securite |
+| Technique | maintenance, diagnostic, tutoriel, guide, mecanique, reparation, preventif, systeme, equipement, formation |
+| Innovation | innovation, futur, technologie, ia, autonome, electrique, transformation, strategie, tendance, 2030 |
 
-**Technique :**
-- maintenance, diagnostic, tutoriel, guide, mecanique, reparation, preventif, systeme, equipement, outil, formation
-
-**Innovation :**
-- innovation, futur, technologie, ia, autonome, electrique, transformation, strategie, tendance, 2030
-
-### Création de Nouveaux Tags
-
-Les tâches peuvent créer de nouveaux tags si nécessaire. Les tags sont automatiquement créés lors de la publication si le slug n'existe pas.
-
----
-
-## Monitoring et Maintenance
-
-### Vérification du Statut
-
-Pour vérifier que l'API fonctionne :
-```bash
-curl https://3000-i4jp2kjg3m3gyuhg3iz3f-3d73e010.us2.manus.computer/api/health
-```
-
-Réponse attendue :
-```json
-{
-  "status": "ok",
-  "timestamp": "2026-02-06T19:00:00.000Z"
-}
-```
-
-### Consultation des Articles Publiés
-
-```bash
-curl -H "X-API-Key: $SCHEDULED_TASK_API_KEY" \
-  https://3000-i4jp2kjg3m3gyuhg3iz3f-3d73e010.us2.manus.computer/api/articles?status=published
-```
-
-### Logs et Débogage
-
-Les tâches planifiées génèrent des logs dans l'interface Manus. En cas d'erreur :
-1. Vérifier que SCHEDULED_TASK_API_KEY est définie
-2. Tester l'endpoint manuellement avec curl
-3. Vérifier les logs de la tâche dans l'interface Manus
-4. Consulter les logs du serveur dans `.manus-logs/`
+Les tags sont automatiquement créés lors de la publication si le slug n'existe pas.
 
 ---
 
 ## Activation des Tâches
 
-**Important :** Les tâches ont été créées mais ne sont **pas encore activées**. 
+**Important :** Les tâches ont été créées mais ne sont **pas encore activées**.
 
 Pour les activer, l'utilisateur doit :
 1. Accéder à l'interface de gestion des tâches planifiées dans Manus
@@ -282,34 +262,10 @@ Une fois activées, les tâches s'exécuteront automatiquement chaque semaine se
 
 ---
 
-## Bonnes Pratiques
-
-### Qualité du Contenu
-- Toujours citer les sources
-- Vérifier les faits et statistiques
-- Adapter le contenu au contexte québécois
-- Utiliser un français professionnel sans anglicismes
-
-### SEO
-- Titres accrocheurs avec mots-clés
-- Meta descriptions optimisées (150-200 caractères)
-- 5-7 tags pertinents par article
-- Images de couverture générées automatiquement
-- Liens internes vers services FleetCrew
-
-### Engagement
-- Poser des questions au lecteur
-- Inclure des appels à l'action
-- Fournir de la valeur actionnable
-- Varier les formats (listes, tableaux, citations)
-
----
-
 ## Dépannage
 
 ### Problème : Aucun article n'est publié
 
-**Solutions :**
 1. Vérifier que les tâches sont activées dans l'interface Manus
 2. Vérifier que SCHEDULED_TASK_API_KEY est configurée
 3. Tester l'API manuellement avec curl
@@ -317,14 +273,12 @@ Une fois activées, les tâches s'exécuteront automatiquement chaque semaine se
 
 ### Problème : Image de couverture non générée
 
-**Solutions :**
-1. Vérifier que `generateCoverImage: true` est présent
-2. Vérifier les logs pour erreurs de génération d'image
+1. Vérifier que le prompt d'image est correct pour le jour
+2. Vérifier que l'upload S3 a réussi
 3. Tester la génération d'image manuellement
 
 ### Problème : Catégorie ou tags invalides
 
-**Solutions :**
 1. Consulter la liste des catégories : `GET /api/categories`
 2. Consulter la liste des tags : `GET /api/tags`
 3. Utiliser les slugs exacts (ex: `mecanique-maintenance`, pas `mecanique_maintenance`)
@@ -335,9 +289,10 @@ Une fois activées, les tâches s'exécuteront automatiquement chaque semaine se
 
 Pour toute question ou problème avec les tâches planifiées :
 - Email : fleetcrewteam@manus.bot
-- Documentation API : `/API_DOCUMENTATION.md`
+- Documentation API : [API_DOCUMENTATION.md](./API_DOCUMENTATION.md)
+- Guide de publication : [GUIDE_PUBLICATION_API.md](./GUIDE_PUBLICATION_API.md)
 - Support Manus : https://help.manus.im
 
 ---
 
-*Dernière mise à jour : 6 février 2026*
+*Dernière mise à jour : 7 février 2026*

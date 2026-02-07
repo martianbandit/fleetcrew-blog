@@ -200,3 +200,9 @@
 ## Documentation API
 - [x] Créer un guide pratique de publication via l'API
 - [x] Mettre à jour API_DOCUMENTATION.md avec le guide
+
+## Mise à jour tâches planifiées v2
+- [x] Créer 3 prompts d'image cyberpunk/néon basés sur le style visuel fourni
+- [x] Mettre à jour les 3 tâches planifiées avec référence au guide API
+- [x] Intégrer l'alternance des 3 prompts d'image dans les tâches
+- [x] Mettre à jour la documentation SCHEDULED_TASKS_DOCUMENTATION.md
